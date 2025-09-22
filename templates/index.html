@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚗 Parking Slot Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        .hover-scale {
+            transition: transform 0.2s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #e0e7ff 0%, #e9d5ff 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 gradient-bg">
+    <div class="container max-w-lg w-full bg-white rounded-2xl shadow-xl p-6 sm:p-8 animate-fade-in hover-scale">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6 flex items-center justify-center gap-2">
+            <span>🚗</span> Parking Slot Predictor
+        </h1>
+        <form method="post" class="space-y-4">
+            <div>
+                <label for="hour" class="block text-sm font-medium text-gray-700">Hour (0–23):</label>
+                <input type="number" id="hour" name="hour" required min="0" max="23"
+                       class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200">
+            </div>
+            <div>
+                <label for="day" class="block text-sm font-medium text-gray-700">Day of Week (0=Mon … 6=Sun):</label>
+                <input type="number" id="day" name="day" required min="0" max="6"
+                       class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200">
+            </div>
+            <button type="submit"
+                    class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 hover:shadow-lg">
+                Predict
+            </button>
+        </form>
+
+        {% if predictions %}
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 text-center mt-8 mb-4">Top 10 Available Slots</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left bg-gray-50 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="px-4 py-3 text-sm font-semibold text-gray-700">Slot</th>
+                            <th class="px-4 py-3 text-sm font-semibold text-gray-700">Chance Free (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slot, prob in predictions %}
+                            <tr class="hover:bg-indigo-50 transition-colors duration-150">
+                                <td class="px-4 py-3 text-gray-600">{{ slot }}</td>
+                                <td class="px-4 py-3 text-gray-600">{{ "%.2f"|format(prob) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
