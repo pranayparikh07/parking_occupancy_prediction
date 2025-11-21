@@ -10,9 +10,11 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def index():
     predictions = None
+    expected_free = None
     if request.method == "POST":
         try:
-            hour = int(request.form["hour"])
+            # Accept fractional hours
+            hour = float(request.form["hour"])  
             day = int(request.form["day"])
 
             # Prepare input
@@ -23,13 +25,16 @@ def index():
             slot_free_prob = {name: p * 100 for name, p in zip(slot_names, proba)}
             sorted_slots = dict(sorted(slot_free_prob.items(), key=lambda x: x[1], reverse=True))
 
+            # Expected available slots
+            expected_free = sum(proba)
+
             # Top 10 results
             predictions = list(sorted_slots.items())[:10]
+
         except Exception as e:
             predictions = [("Error", str(e))]
 
-    return render_template("index.html", predictions=predictions)
+    return render_template("index.html", predictions=predictions, expected_free=expected_free)
 
 if __name__ == "__main__":
     app.run(debug=True)
-    

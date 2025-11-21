@@ -1,72 +1,270 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚗 Parking Slot Predictor</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="AI powered parking availability prediction" />
+    <title>ParkIQ – Smart Parking Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        .hover-scale {
-            transition: transform 0.2s ease;
-        }
-        .hover-scale:hover {
-            transform: scale(1.02);
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, #e0e7ff 0%, #e9d5ff 100%);
-        }
+        body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .glass { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); }
+        .hero-overlay { background: linear-gradient(rgba(15,23,42,0.70), rgba(15,23,42,0.55)); }
+        .gradient-text { background: linear-gradient(135deg,#2563eb,#0ea5e9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .progress-bar { transition: width .5s ease; }
+        @media (prefers-reduced-motion: reduce){ .progress-bar { transition:none; } }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 gradient-bg">
-    <div class="container max-w-lg w-full bg-white rounded-2xl shadow-xl p-6 sm:p-8 animate-fade-in hover-scale">
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6 flex items-center justify-center gap-2">
-            <span>🚗</span> Parking Slot Predictor
-        </h1>
-        <form method="post" class="space-y-4">
-            <div>
-                <label for="hour" class="block text-sm font-medium text-gray-700">Hour (0–23):</label>
-                <input type="number" id="hour" name="hour" required min="0" max="23"
-                       class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200">
+<body class="h-full bg-slate-50 text-slate-800">
+    <!-- Global Header -->
+    <header class="w-full border-b border-slate-200 bg-white/90 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold shadow-sm">P</div>
+                <div>
+                    <div class="font-semibold text-lg tracking-tight">ParkIQ</div>
+                    <div class="text-xs text-slate-500">Smart Parking Intelligence</div>
+                </div>
             </div>
-            <div>
-                <label for="day" class="block text-sm font-medium text-gray-700">Day of Week (0=Mon … 6=Sun):</label>
-                <input type="number" id="day" name="day" required min="0" max="6"
-                       class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200">
-            </div>
-            <button type="submit"
-                    class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 hover:shadow-lg">
-                Predict
-            </button>
-        </form>
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+                <a href="#predict" class="text-slate-600 hover:text-blue-600 transition">Predict</a>
+                <a href="#features" class="text-slate-600 hover:text-blue-600 transition">Features</a>
+                <a href="#how" class="text-slate-600 hover:text-blue-600 transition">How It Works</a>
+                <a href="#contact" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-500 transition shadow-sm">Contact</a>
+            </nav>
+        </div>
+    </header>
 
-        {% if predictions %}
-            <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 text-center mt-8 mb-4">Top 10 Available Slots</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left bg-gray-50 rounded-lg">
-                    <thead>
-                        <tr class="bg-gray-200">
-                            <th class="px-4 py-3 text-sm font-semibold text-gray-700">Slot</th>
-                            <th class="px-4 py-3 text-sm font-semibold text-gray-700">Chance Free (%)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for slot, prob in predictions %}
-                            <tr class="hover:bg-indigo-50 transition-colors duration-150">
-                                <td class="px-4 py-3 text-gray-600">{{ slot }}</td>
-                                <td class="px-4 py-3 text-gray-600">{{ "%.2f"|format(prob) }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <!-- Hero Section -->
+    <section class="relative isolate">
+        <div class="absolute inset-0 -z-10">
+            <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=1600&q=60" alt="Parking lot aerial" class="w-full h-[520px] object-cover" />
+            <div class="absolute inset-0 hero-overlay"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col lg:flex-row gap-12">
+            <div class="flex-1 text-white">
+                <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-6">Predict <span class="gradient-text">Real-Time</span> Parking Availability</h1>
+                <p class="text-lg text-slate-200 max-w-xl mb-8">Leverage machine learning to discover the most probable free parking slots before you arrive. Reduce search time, emissions, and frustration.</p>
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">🔄 Live Forecast</div>
+                    <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">⚡ Fast Response</div>
+                    <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">📊 Data Driven</div>
+                </div>
             </div>
-        {% endif %}
-    </div>
+            <!-- Quick Form Card -->
+            <div id="predict" class="w-full max-w-md glass rounded-xl shadow-xl border border-white/40 p-6">
+                <h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><span class="text-blue-600">🔍</span> Quick Prediction</h2>
+                <form method="post" class="space-y-5" id="predict-form">
+                    <div>
+                        <label for="hour" class="block text-sm font-medium mb-1 text-slate-700">Time of Day (24h)</label>
+                        <input type="number" step="0.01" id="hour" name="hour" required min="0" max="23" placeholder="14.30" class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 outline-none transition" />
+                        <p class="text-xs text-slate-500 mt-1">Example: 14.30 = 2:30 PM</p>
+                    </div>
+                    <div>
+                        <label for="day" class="block text-sm font-medium mb-1 text-slate-700">Day of Week</label>
+                        <select id="day" name="day" required class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 outline-none transition">
+                            <option value="">Select a day…</option>
+                            <option value="0">Monday</option>
+                            <option value="1">Tuesday</option>
+                            <option value="2">Wednesday</option>
+                            <option value="3">Thursday</option>
+                            <option value="4">Friday</option>
+                            <option value="5">Saturday</option>
+                            <option value="6">Sunday</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="submit-btn" class="w-full inline-flex justify-center items-center gap-2 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 py-2.5 text-sm font-semibold text-white shadow hover:from-blue-500 hover:to-cyan-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition">
+                        <span id="btn-text">Generate Prediction</span>
+                        <span id="loading-text" class="hidden items-center gap-2"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg> Processing…</span>
+                    </button>
+                </form>
+                <div class="mt-6 text-xs text-slate-600 leading-relaxed border-t pt-4">Your input is processed by a trained model using historical occupancy patterns to produce a ranked list of likely free slots.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-10 text-center">Why ParkIQ</h2>
+            <div class="grid gap-8 md:grid-cols-3">
+                <div class="group rounded-xl border border-slate-200 p-6 bg-gradient-to-b from-white to-slate-50 hover:shadow-lg transition">
+                    <img src="https://images.unsplash.com/photo-1517511620798-cec17d428bc0?auto=format&fit=crop&w=600&q=60" alt="Data dashboard" class="rounded-md mb-4 h-40 w-full object-cover" />
+                    <h3 class="font-semibold text-lg mb-2">Data Driven Insights</h3>
+                    <p class="text-sm text-slate-600">Advanced statistical modeling and ML to identify temporal free-space patterns with precision.</p>
+                </div>
+                <div class="group rounded-xl border border-slate-200 p-6 bg-gradient-to-b from-white to-slate-50 hover:shadow-lg transition">
+                    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=60" alt="Lightning speed" class="rounded-md mb-4 h-40 w-full object-cover" />
+                    <h3 class="font-semibold text-lg mb-2">Real-Time Performance</h3>
+                    <p class="text-sm text-slate-600">Optimized inference ensures predictions render in under a second on modern hardware.</p>
+                </div>
+                <div class="group rounded-xl border border-slate-200 p-6 bg-gradient-to-b from-white to-slate-50 hover:shadow-lg transition">
+                    <img src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=600&q=60" alt="User experience" class="rounded-md mb-4 h-40 w-full object-cover" />
+                    <h3 class="font-semibold text-lg mb-2">User-Centric Design</h3>
+                    <p class="text-sm text-slate-600">Clear hierarchy, accessible components, and adaptive layouts for every device size.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="py-20 bg-slate-100" aria-labelledby="results-heading">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-8">
+                <h2 id="results-heading" class="text-2xl font-semibold">Predicted Available Slots</h2>
+                {% if predictions %}
+                    <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">{{ predictions|length }} slots</span>
+                {% endif %}
+            </div>
+            {% if predictions %}
+                <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 text-slate-600 uppercase text-xs tracking-wide border-b border-slate-200">
+                            <tr>
+                                <th scope="col" class="text-left font-medium px-4 py-3">Slot ID</th>
+                                <th scope="col" class="text-left font-medium px-4 py-3">Probability Free</th>
+                                <th scope="col" class="text-left font-medium px-4 py-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            {% for slot, prob in predictions %}
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="px-4 py-3 font-medium text-slate-800">{{ slot }}</td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-3 w-full max-w-xs">
+                                        <div class="flex-1 h-2 rounded-full bg-slate-200 overflow-hidden">
+                                            <div class="h-full progress-bar rounded-full 
+                                                {% if prob >= 70 %} bg-green-500 {% elif prob >= 40 %} bg-amber-500 {% else %} bg-red-500 {% endif %}" style="width: {{ prob }}%;"></div>
+                                        </div>
+                                        <span class="text-xs font-semibold {% if prob >= 70 %} text-green-600 {% elif prob >= 40 %} text-amber-600 {% else %} text-red-600 {% endif %}">{{ "%.1f"|format(prob) }}%</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    {% if prob >= 70 %}
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-green-50 px-2 py-1 text-[11px] font-medium text-green-700">🟢 Likely Free</span>
+                                    {% elif prob >= 40 %}
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-1 text-[11px] font-medium text-amber-700">🟡 Moderate</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-red-50 px-2 py-1 text-[11px] font-medium text-red-700">🔴 Low Chance</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Summary Stats -->
+                <div class="grid sm:grid-cols-3 gap-6 mt-10" aria-label="Summary statistics">
+                    <div class="rounded-lg border border-slate-200 bg-white p-5">
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">High Availability</p>
+                        <p class="mt-2 text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">{{ predictions|selectattr(1,'ge',70)|list|length }}</p>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 bg-white p-5">
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Moderate</p>
+                        <p class="mt-2 text-3xl font-bold bg-gradient-to-r from-amber-500 to-yellow-400 bg-clip-text text-transparent">{{ predictions|selectattr(1,'ge',40)|selectattr(1,'lt',70)|list|length }}</p>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 bg-white p-5">
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Limited</p>
+                        <p class="mt-2 text-3xl font-bold bg-gradient-to-r from-red-600 to-rose-500 bg-clip-text text-transparent">{{ predictions|selectattr(1,'lt',40)|list|length }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="rounded-xl border border-dashed border-slate-300 p-12 text-center bg-white">
+                    <div class="mx-auto h-20 w-20 flex items-center justify-center rounded-full bg-blue-50 mb-6">
+                        <span class="text-3xl">🅿️</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">No Predictions Yet</h3>
+                    <p class="text-sm text-slate-600 mb-6 max-w-md mx-auto">Use the Quick Prediction form above to generate real-time availability estimates for parking slots.</p>
+                    <a href="#predict" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium shadow hover:bg-blue-500 transition">Get Started →</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how" class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-10 text-center">How It Works</h2>
+            <ol class="space-y-6">
+                <li class="flex gap-4">
+                    <div class="h-10 w-10 flex-shrink-0 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">1</div>
+                    <div>
+                        <h3 class="font-semibold mb-1">Input Time & Day</h3>
+                        <p class="text-sm text-slate-600">You provide the target arrival window and weekday context.</p>
+                    </div>
+                </li>
+                <li class="flex gap-4">
+                    <div class="h-10 w-10 flex-shrink-0 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">2</div>
+                    <div>
+                        <h3 class="font-semibold mb-1">Model Inference</h3>
+                        <p class="text-sm text-slate-600">Historical occupancy patterns are combined with temporal features to score slots.</p>
+                    </div>
+                </li>
+                <li class="flex gap-4">
+                    <div class="h-10 w-10 flex-shrink-0 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">3</div>
+                    <div>
+                        <h3 class="font-semibold mb-1">Ranked Recommendations</h3>
+                        <p class="text-sm text-slate-600">You receive an ordered list emphasizing the highest likelihood of availability.</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="border-t border-slate-200 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="flex flex-col md:flex-row justify-between gap-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="h-9 w-9 rounded-md bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold">P</div>
+                        <span class="font-semibold">ParkIQ</span>
+                    </div>
+                    <p class="text-sm text-slate-600 max-w-sm">Delivering predictive parking intelligence that saves time and reduces congestion.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-8 text-sm">
+                    <div>
+                        <h4 class="font-semibold mb-3">Product</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#features" class="text-slate-600 hover:text-blue-600 transition">Features</a></li>
+                            <li><a href="#how" class="text-slate-600 hover:text-blue-600 transition">How It Works</a></li>
+                            <li><a href="#predict" class="text-slate-600 hover:text-blue-600 transition">Prediction</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-3">Support</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-slate-600 hover:text-blue-600 transition">Docs</a></li>
+                            <li><a href="#" class="text-slate-600 hover:text-blue-600 transition">API</a></li>
+                            <li><a href="#contact" class="text-slate-600 hover:text-blue-600 transition">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-10 pt-6 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row justify-between gap-4">
+                <span>© 2025 ParkIQ. All rights reserved.</span>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-blue-600">Privacy</a>
+                    <a href="#" class="hover:text-blue-600">Terms</a>
+                    <a href="#" class="hover:text-blue-600">Status</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const form = document.getElementById('predict-form');
+        form.addEventListener('submit', (e) => {
+            const btn = document.getElementById('submit-btn');
+            const txt = document.getElementById('btn-text');
+            const load = document.getElementById('loading-text');
+            btn.disabled = true;
+            txt.classList.add('hidden');
+            load.classList.remove('hidden');
+        });
+    </script>
 </body>
 </html>
