@@ -16,6 +16,44 @@
         .gradient-text { background: linear-gradient(135deg,#2563eb,#0ea5e9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
         .progress-bar { transition: width .5s ease; }
         @media (prefers-reduced-motion: reduce){ .progress-bar { transition:none; } }
+        /* Prediction form arrival highlight */
+        @keyframes pulse-focus { 0%,100% { box-shadow:0 0 0 0 rgba(37,99,235,0.6);} 50% { box-shadow:0 0 0 12px rgba(37,99,235,0); } }
+        .focus-pulse { animation:pulse-focus 1.2s ease-in-out 2; }
+        /* CTA arrow bounce */
+        @keyframes cta-bounce { 0%,100% { transform:translateY(0);} 50% { transform:translateY(6px);} }
+        .cta-bounce { animation:cta-bounce 1.6s infinite; }
+        /* Row reveal */
+        @keyframes row-reveal { 0% { opacity:0; transform:translateY(12px);} 100% { opacity:1; transform:translateY(0);} }
+        .will-reveal { opacity:0; }
+        .revealed { animation:row-reveal .5s ease forwards; }
+        /* Hero fade shrink */
+        .hero-transition { transition:opacity .6s ease, filter .6s ease; }
+        .hero-faded { opacity:.35; filter:blur(2px); }
+        /* Fallback animated gradient if video fails */
+        @keyframes gradient-pan { 0% { background-position:0% 50%; } 50% { background-position:100% 50%; } 100% { background-position:0% 50%; } }
+        .hero-fallback { background:linear-gradient(120deg,#0f172a,#1e3a8a,#0ea5e9,#0f172a); background-size:300% 300%; animation:gradient-pan 18s linear infinite; }
+                /* Parking lot animation */
+                .parking-strip { position:absolute; bottom:72px; left:50%; transform:translateX(-50%); width:90%; max-width:1000px; pointer-events:none; }
+                .parking-lot { display:grid; grid-template-columns:repeat(10,1fr); gap:6px; padding:6px 8px; background:rgba(255,255,255,0.08); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.25); border-radius:10px; }
+                .slot { position:relative; height:26px; border:1px solid rgba(255,255,255,0.35); border-radius:4px; overflow:hidden; }
+                .slot::after { content:""; position:absolute; inset:0; background:linear-gradient(160deg,rgba(255,255,255,0.15),rgba(255,255,255,0)); opacity:0; transition:opacity .6s; }
+                .slot.active::after { opacity:1; }
+                .car { position:absolute; top:2px; left:-40px; width:34px; height:20px; background:#0ea5e9; border-radius:4px 6px 6px 4px; box-shadow:0 2px 4px rgba(0,0,0,0.25); display:flex; justify-content:center; align-items:center; color:#fff; font-size:10px; font-weight:600; letter-spacing:.5px; }
+                .car::before, .car::after { content:""; position:absolute; width:8px; height:8px; background:#1e293b; border-radius:50%; bottom:-3px; }
+                .car::before { left:5px; } .car::after { right:5px; }
+                @keyframes drive-park {
+                    0% { transform:translateX(0); }
+                    30% { transform:translateX(var(--park-x)); }
+                    45% { transform:translateX(var(--park-x)); }
+                    55% { transform:translateX(var(--park-x)) translateY(0); }
+                    70% { transform:translateX(var(--exit-x)); }
+                    100% { transform:translateX(var(--exit-x)); }
+                }
+                .car.anim { animation:drive-park 9s cubic-bezier(.65,.05,.36,1) infinite; }
+                @media (prefers-reduced-motion: reduce) {
+                    .car.anim { animation:none; display:none; }
+                    .parking-lot { animation:none; }
+                }
     </style>
 </head>
 <body class="h-full bg-slate-50 text-slate-800">
@@ -38,26 +76,35 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="relative isolate">
+    <!-- Hero Section (Static image restored) -->
+    <section class="relative isolate" aria-labelledby="hero-heading">
         <div class="absolute inset-0 -z-10">
-            <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=1600&q=60" alt="Parking lot aerial" class="w-full h-[520px] object-cover" />
+            <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=1600&q=60" alt="Parking lot aerial" class="w-full h-[520px] object-cover" loading="eager" />
             <div class="absolute inset-0 hero-overlay"></div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col lg:flex-row gap-12">
-            <div class="flex-1 text-white">
+            <div class="flex-1 text-white" id="hero-heading">
                 <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-6">Predict <span class="gradient-text">Real-Time</span> Parking Availability</h1>
                 <p class="text-lg text-slate-200 max-w-xl mb-8">Leverage machine learning to discover the most probable free parking slots before you arrive. Reduce search time, emissions, and frustration.</p>
                 <div class="flex flex-wrap gap-4">
-                    <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">🔄 Live Forecast</div>
-                    <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">⚡ Fast Response</div>
-                    <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">📊 Data Driven</div>
+                    <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+                        <span>Live Forecast</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        <span>Fast Response</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                        <span>Data Driven</span>
+                    </div>
                 </div>
             </div>
             <!-- Quick Form Card -->
             <div id="predict" class="w-full max-w-md glass rounded-xl shadow-xl border border-white/40 p-6">
                 <h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><span class="text-blue-600">🔍</span> Quick Prediction</h2>
-                <form method="post" class="space-y-5" id="predict-form">
+                <form method="GET" action="/predictions" class="space-y-5" id="predict-form">
                     <div>
                         <label for="hour" class="block text-sm font-medium mb-1 text-slate-700">Time of Day (24h)</label>
                         <input type="number" step="0.01" id="hour" name="hour" required min="0" max="23" placeholder="14.30" class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 outline-none transition" />
@@ -84,6 +131,11 @@
                 <div class="mt-6 text-xs text-slate-600 leading-relaxed border-t pt-4">Your input is processed by a trained model using historical occupancy patterns to produce a ranked list of likely free slots.</div>
             </div>
         </div>
+        <!-- Scroll CTA (kept) -->
+        <button id="scroll-cta" type="button" class="absolute left-1/2 -translate-x-1/2 bottom-6 inline-flex flex-col items-center text-white/90 hover:text-white focus:outline-none" aria-label="Scroll to prediction form">
+            <span class="text-xs tracking-wide mb-1">Start Predicting</span>
+            <svg class="w-7 h-7 cta-bounce" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m0 0-7-7m7 7 7-7"/></svg>
+        </button>
     </section>
 
     <!-- Features Section -->
@@ -92,17 +144,23 @@
             <h2 class="text-3xl font-bold mb-10 text-center">Why ParkIQ</h2>
             <div class="grid gap-8 md:grid-cols-3">
                 <div class="group rounded-xl border border-slate-200 p-6 bg-gradient-to-b from-white to-slate-50 hover:shadow-lg transition">
-                    <img src="https://images.unsplash.com/photo-1517511620798-cec17d428bc0?auto=format&fit=crop&w=600&q=60" alt="Data dashboard" class="rounded-md mb-4 h-40 w-full object-cover" />
+                    <img loading="lazy" src="https://images.unsplash.com/photo-1517511620798-cec17d428bc0?auto=format&fit=crop&w=400&q=50" 
+                         srcset="https://images.unsplash.com/photo-1517511620798-cec17d428bc0?auto=format&fit=crop&w=400&q=50 400w, https://images.unsplash.com/photo-1517511620798-cec17d428bc0?auto=format&fit=crop&w=600&q=60 600w" 
+                         data-full="https://images.unsplash.com/photo-1517511620798-cec17d428bc0?auto=format&fit=crop&w=1200&q=70" alt="Data dashboard" class="rounded-md mb-4 h-40 w-full object-cover cursor-zoom-in" />
                     <h3 class="font-semibold text-lg mb-2">Data Driven Insights</h3>
                     <p class="text-sm text-slate-600">Advanced statistical modeling and ML to identify temporal free-space patterns with precision.</p>
                 </div>
                 <div class="group rounded-xl border border-slate-200 p-6 bg-gradient-to-b from-white to-slate-50 hover:shadow-lg transition">
-                    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=60" alt="Lightning speed" class="rounded-md mb-4 h-40 w-full object-cover" />
+                    <img loading="lazy" src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=50" 
+                         srcset="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=50 400w, https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=60 600w" 
+                         data-full="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=70" alt="Lightning speed" class="rounded-md mb-4 h-40 w-full object-cover cursor-zoom-in" />
                     <h3 class="font-semibold text-lg mb-2">Real-Time Performance</h3>
                     <p class="text-sm text-slate-600">Optimized inference ensures predictions render in under a second on modern hardware.</p>
                 </div>
                 <div class="group rounded-xl border border-slate-200 p-6 bg-gradient-to-b from-white to-slate-50 hover:shadow-lg transition">
-                    <img src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=600&q=60" alt="User experience" class="rounded-md mb-4 h-40 w-full object-cover" />
+                    <img loading="lazy" src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=400&q=50" 
+                         srcset="https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=400&q=50 400w, https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=600&q=60 600w" 
+                         data-full="https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=1200&q=70" alt="User experience" class="rounded-md mb-4 h-40 w-full object-cover cursor-zoom-in" />
                     <h3 class="font-semibold text-lg mb-2">User-Centric Design</h3>
                     <p class="text-sm text-slate-600">Clear hierarchy, accessible components, and adaptive layouts for every device size.</p>
                 </div>
@@ -110,79 +168,7 @@
         </div>
     </section>
 
-    <!-- Results Section -->
-    <section class="py-20 bg-slate-100" aria-labelledby="results-heading">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between mb-8">
-                <h2 id="results-heading" class="text-2xl font-semibold">Predicted Available Slots</h2>
-                {% if predictions %}
-                    <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">{{ predictions|length }} slots</span>
-                {% endif %}
-            </div>
-            {% if predictions %}
-                <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                    <table class="w-full text-sm">
-                        <thead class="bg-slate-50 text-slate-600 uppercase text-xs tracking-wide border-b border-slate-200">
-                            <tr>
-                                <th scope="col" class="text-left font-medium px-4 py-3">Slot ID</th>
-                                <th scope="col" class="text-left font-medium px-4 py-3">Probability Free</th>
-                                <th scope="col" class="text-left font-medium px-4 py-3">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            {% for slot, prob in predictions %}
-                            <tr class="hover:bg-slate-50 transition">
-                                <td class="px-4 py-3 font-medium text-slate-800">{{ slot }}</td>
-                                <td class="px-4 py-3">
-                                    <div class="flex items-center gap-3 w-full max-w-xs">
-                                        <div class="flex-1 h-2 rounded-full bg-slate-200 overflow-hidden">
-                                            <div class="h-full progress-bar rounded-full 
-                                                {% if prob >= 70 %} bg-green-500 {% elif prob >= 40 %} bg-amber-500 {% else %} bg-red-500 {% endif %}" style="width: {{ prob }}%;"></div>
-                                        </div>
-                                        <span class="text-xs font-semibold {% if prob >= 70 %} text-green-600 {% elif prob >= 40 %} text-amber-600 {% else %} text-red-600 {% endif %}">{{ "%.1f"|format(prob) }}%</span>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3">
-                                    {% if prob >= 70 %}
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-green-50 px-2 py-1 text-[11px] font-medium text-green-700">🟢 Likely Free</span>
-                                    {% elif prob >= 40 %}
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-1 text-[11px] font-medium text-amber-700">🟡 Moderate</span>
-                                    {% else %}
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-red-50 px-2 py-1 text-[11px] font-medium text-red-700">🔴 Low Chance</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Summary Stats -->
-                <div class="grid sm:grid-cols-3 gap-6 mt-10" aria-label="Summary statistics">
-                    <div class="rounded-lg border border-slate-200 bg-white p-5">
-                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">High Availability</p>
-                        <p class="mt-2 text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">{{ predictions|selectattr(1,'ge',70)|list|length }}</p>
-                    </div>
-                    <div class="rounded-lg border border-slate-200 bg-white p-5">
-                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Moderate</p>
-                        <p class="mt-2 text-3xl font-bold bg-gradient-to-r from-amber-500 to-yellow-400 bg-clip-text text-transparent">{{ predictions|selectattr(1,'ge',40)|selectattr(1,'lt',70)|list|length }}</p>
-                    </div>
-                    <div class="rounded-lg border border-slate-200 bg-white p-5">
-                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Limited</p>
-                        <p class="mt-2 text-3xl font-bold bg-gradient-to-r from-red-600 to-rose-500 bg-clip-text text-transparent">{{ predictions|selectattr(1,'lt',40)|list|length }}</p>
-                    </div>
-                </div>
-            {% else %}
-                <div class="rounded-xl border border-dashed border-slate-300 p-12 text-center bg-white">
-                    <div class="mx-auto h-20 w-20 flex items-center justify-center rounded-full bg-blue-50 mb-6">
-                        <span class="text-3xl">🅿️</span>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">No Predictions Yet</h3>
-                    <p class="text-sm text-slate-600 mb-6 max-w-md mx-auto">Use the Quick Prediction form above to generate real-time availability estimates for parking slots.</p>
-                    <a href="#predict" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium shadow hover:bg-blue-500 transition">Get Started →</a>
-                </div>
-            {% endif %}
-        </div>
-    </section>
+    <!-- (Predictions moved to separate page) -->
 
     <!-- How It Works Section -->
     <section id="how" class="py-20 bg-white">
@@ -255,16 +241,152 @@
         </div>
     </footer>
 
-    <script>
-        const form = document.getElementById('predict-form');
-        form.addEventListener('submit', (e) => {
-            const btn = document.getElementById('submit-btn');
-            const txt = document.getElementById('btn-text');
-            const load = document.getElementById('loading-text');
-            btn.disabled = true;
-            txt.classList.add('hidden');
-            load.classList.remove('hidden');
-        });
-    </script>
+        <!-- Modal container -->
+        <div id="media-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 opacity-0 pointer-events-none transition">
+            <div class="relative w-full max-w-3xl mx-4">
+                <button id="modal-close" class="absolute -top-10 right-0 text-white text-sm bg-white/10 hover:bg-white/20 rounded px-3 py-1">Close ✕</button>
+                <div class="bg-white rounded-lg overflow-hidden shadow-2xl">
+                    <img id="modal-image" alt="Preview" class="w-full h-auto hidden"/>
+                    <video id="modal-video" class="w-full h-auto hidden" controls></video>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Form submission: show loading + set scroll flag
+            const form = document.getElementById('predict-form');
+            form.addEventListener('submit', () => {
+                const btn = document.getElementById('submit-btn');
+                const txt = document.getElementById('btn-text');
+                const load = document.getElementById('loading-text');
+                btn.disabled = true; txt.classList.add('hidden'); load.classList.remove('hidden');
+                try { sessionStorage.setItem('scrollToResults','1'); } catch(e) {}
+            });
+
+            // Lazy video activation
+            // Removed video logic (static image now)
+
+            // Modal logic for images
+            const modal = document.getElementById('media-modal');
+            const modalImg = document.getElementById('modal-image');
+            const modalVideo = document.getElementById('modal-video');
+            const closeBtn = document.getElementById('modal-close');
+            function openModal(type, src){
+                modal.classList.remove('pointer-events-none');
+                modal.classList.add('opacity-100');
+                if(type==='image'){ modalVideo.classList.add('hidden'); modalImg.classList.remove('hidden'); modalImg.src = src; }
+                else { modalImg.classList.add('hidden'); modalVideo.classList.remove('hidden'); modalVideo.src = src; modalVideo.play().catch(()=>{}); }
+            }
+            function closeModal(){
+                modal.classList.add('pointer-events-none');
+                modal.classList.remove('opacity-100');
+                modalImg.src=''; modalVideo.pause(); modalVideo.src='';
+            }
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', e => { if(e.target===modal) closeModal(); });
+            document.querySelectorAll('img[data-full]').forEach(img => {
+                img.addEventListener('click', () => openModal('image', img.getAttribute('data-full')));
+            });
+
+                        // Auto scroll to results on prediction render
+                        document.addEventListener('DOMContentLoaded', () => {
+                                const shouldScroll = sessionStorage.getItem('scrollToResults') === '1';
+                                const resultsEl = document.getElementById('results-heading');
+                                const resultsSection = document.querySelector('section[aria-labelledby="results-heading"]');
+                                const hasTable = !!document.querySelector('section[aria-labelledby="results-heading"] table');
+                                const hero = document.querySelector('section[aria-labelledby="hero-heading"]');
+
+                                function easeInOutQuad(t){ return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+                                function animateScroll(to, duration=900){
+                                    const start = window.scrollY;
+                                    const end = to - 24; // small offset
+                                    const diff = end - start;
+                                    let startTime = null;
+                                    function step(ts){
+                                        if(!startTime) startTime = ts;
+                                        const progress = Math.min((ts - startTime)/duration,1);
+                                        const eased = easeInOutQuad(progress);
+                                        window.scrollTo(0, start + diff * eased);
+                                        if(progress < 1) requestAnimationFrame(step); else afterScroll();
+                                    }
+                                    requestAnimationFrame(step);
+                                }
+                                function afterScroll(){
+                                    // Highlight results section
+                                    if(resultsSection){
+                                        resultsSection.classList.add('focus-pulse');
+                                        setTimeout(()=>resultsSection.classList.remove('focus-pulse'),2400);
+                                    }
+                                    // Reveal rows staggered
+                                    const rows = Array.from(document.querySelectorAll('tbody tr'));
+                                    rows.forEach(r => r.classList.add('will-reveal'));
+                                    rows.forEach((r,i)=>{
+                                        setTimeout(()=>{ r.classList.remove('will-reveal'); r.classList.add('revealed'); }, i*70);
+                                    });
+                                }
+
+                                if (shouldScroll && resultsEl && hasTable) {
+                                        // Fade hero for transition effect
+                                        if(hero){ hero.classList.add('hero-transition','hero-faded'); }
+                                        animateScroll(resultsEl.getBoundingClientRect().top + window.scrollY);
+                                        sessionStorage.removeItem('scrollToResults');
+                                }
+                                // Hero CTA custom eased scroll
+                                const cta = document.getElementById('scroll-cta');
+                                const target = document.getElementById('predict');
+                                function easeInOutQuad(t){ return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+                                function animateScroll(to, duration=900){
+                                    const start = window.scrollY;
+                                    const end = to - 40; // slight offset
+                                    const diff = end - start;
+                                    let startTime = null;
+                                    function step(timestamp){
+                                        if(!startTime) startTime = timestamp;
+                                        const progress = Math.min((timestamp - startTime)/duration,1);
+                                        const eased = easeInOutQuad(progress);
+                                        window.scrollTo(0, start + diff * eased);
+                                        if(progress < 1) requestAnimationFrame(step); else highlightTarget();
+                                    }
+                                    requestAnimationFrame(step);
+                                }
+                                function highlightTarget(){
+                                    if(!target) return;
+                                    target.classList.add('focus-pulse');
+                                    setTimeout(()=>target.classList.remove('focus-pulse'),2400);
+                                }
+                                if(cta && target){
+                                    cta.addEventListener('click', () => animateScroll(target.getBoundingClientRect().top + window.scrollY));
+                                }
+                                // Post-process prediction rows: set bar width, colors, badge styles
+                                document.querySelectorAll('.progress-bar').forEach(el => {
+                                    const p = parseFloat(el.getAttribute('data-prob')) || 0;
+                                    el.style.width = p + '%';
+                                    if (p >= 70) el.classList.add('bg-green-500');
+                                    else if (p >= 40) el.classList.add('bg-amber-500');
+                                    else el.classList.add('bg-red-500');
+                                });
+                                document.querySelectorAll('.prob-text').forEach(el => {
+                                    const p = parseFloat(el.getAttribute('data-prob')) || 0;
+                                    if (p >= 70) el.classList.add('text-green-600');
+                                    else if (p >= 40) el.classList.add('text-amber-600');
+                                    else el.classList.add('text-red-600');
+                                });
+                                document.querySelectorAll('.status-badge').forEach(el => {
+                                    const p = parseFloat(el.getAttribute('data-prob')) || 0;
+                                    if (p >= 70) el.classList.add('bg-green-50','text-green-700');
+                                    else if (p >= 40) el.classList.add('bg-amber-50','text-amber-700');
+                                    else el.classList.add('bg-red-50','text-red-700');
+                                });
+                                // Randomly pulse active slots in animation (visualizing dynamic availability)
+                                                                // Prediction display moved to new page; no slot animation
+            });
+                        // Redirect form to separate predictions page (already using GET action)
+                        form.addEventListener('submit', () => {
+                            const hour = document.getElementById('hour').value;
+                            const day = document.getElementById('day').value;
+                            if(hour && day !== '') {
+                                // Allow default submission to /predictions with query params
+                            }
+                        });
+        </script>
 </body>
 </html>

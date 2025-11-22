@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ParkIQ – Predictions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; }
+    .shimmer { position:relative; overflow:hidden; background:#f1f5f9; }
+    .shimmer::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.7) 50%,rgba(255,255,255,0) 100%); animation:shimmer 1.6s infinite; }
+    @keyframes shimmer { 0% { transform:translateX(-100%);} 100% { transform:translateX(100%);} }
+    @keyframes row-reveal { 0% { opacity:0; transform:translateY(8px);} 100% { opacity:1; transform:translateY(0);} }
+    .revealed { animation:row-reveal .45s ease forwards; }
+    /* Spinner */
+    @keyframes spin { to { transform:rotate(360deg);} }
+    .spinner { width:42px; height:42px; border:4px solid #e2e8f0; border-top-color:#2563eb; border-radius:50%; animation:spin .9s linear infinite; }
+    .loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:40; backdrop-filter:blur(4px); }
+    .fade-out { animation:fadeOut .4s ease forwards; }
+    @keyframes fadeOut { to { opacity:0; visibility:hidden; } }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <header class="w-full border-b border-slate-200 bg-white/90 backdrop-blur-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold shadow-sm">P</div>
+        <div>
+          <div class="font-semibold text-lg tracking-tight">ParkIQ</div>
+          <div class="text-xs text-slate-500">Predicted Availability</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <a href="/" class="text-slate-600 hover:text-blue-600 transition">Home</a>
+      </nav>
+    </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-semibold">Predicted Available Slots</h1>
+      <div id="summary-badge" class="hidden items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"></div>
+    </div>
+    <div id="params-info" class="text-sm text-slate-600 mb-4"></div>
+    <div id="tech-loading" class="text-xs text-slate-500 mb-4 hidden">Computing parking occupancy inference pipeline… applying probabilistic slot ranking.</div>
+    <div id="skeleton" class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-50 text-slate-600 uppercase text-xs tracking-wide border-b border-slate-200">
+          <tr>
+            <th class="text-left font-medium px-4 py-3">Slot ID</th>
+            <th class="text-left font-medium px-4 py-3">Probability Free</th>
+            <th class="text-left font-medium px-4 py-3">Status</th>
+          </tr>
+        </thead>
+        <tbody id="skeleton-rows" class="divide-y divide-slate-100">
+          <!-- 10 placeholder rows -->
+          <script>
+            for(let i=0;i<10;i++){
+              document.write(`<tr><td class='px-4 py-3'><div class='h-4 w-24 shimmer rounded'></div></td><td class='px-4 py-3'><div class='h-4 w-40 shimmer rounded'></div></td><td class='px-4 py-3'><div class='h-4 w-28 shimmer rounded'></div></td></tr>`)
+            }
+          </script>
+        </tbody>
+      </table>
+    </div>
+    <div id="results" class="hidden"></div>
+    <div id="error" class="hidden mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700"></div>
+    <div id="stats" class="hidden grid sm:grid-cols-3 gap-6 mt-10" aria-label="Summary statistics">
+      <div class="rounded-lg border border-slate-200 bg-white p-5">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">High Availability</p>
+        <p id="stat-high" class="mt-2 text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">0</p>
+      </div>
+      <div class="rounded-lg border border-slate-200 bg-white p-5">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Moderate</p>
+        <p id="stat-mid" class="mt-2 text-3xl font-bold bg-gradient-to-r from-amber-500 to-yellow-400 bg-clip-text text-transparent">0</p>
+      </div>
+      <div class="rounded-lg border border-slate-200 bg-white p-5">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Limited</p>
+        <p id="stat-low" class="mt-2 text-3xl font-bold bg-gradient-to-r from-red-600 to-rose-500 bg-clip-text text-transparent">0</p>
+      </div>
+    </div>
+  </main>
+  <!-- Spinner Fallback -->
+  <div id="loading-overlay" class="loading-overlay hidden" aria-label="Loading predictions">
+    <div class="spinner mb-4"></div>
+    <p class="text-sm font-medium text-slate-600">Computing your parking availability model…</p>
+    <p class="text-[11px] text-slate-500 mt-1">Performing temporal feature synthesis & probability calibration</p>
+  </div>
+  <script>
+    const qp = new URLSearchParams(window.location.search);
+    const hour = qp.get('hour');
+    const day = qp.get('day');
+    const paramsEl = document.getElementById('params-info');
+    if(hour && day !== null) {
+      paramsEl.textContent = `Request parameters: hour=${hour}, day=${day}`;
+    } else {
+      paramsEl.textContent = 'Missing parameters. Please go back and enter prediction values.';
+    }
+    let overlayShown = false;
+    const overlay = document.getElementById('loading-overlay');
+    const techMsg = document.getElementById('tech-loading');
+    function showOverlay(){ if(!overlayShown){ overlay.classList.remove('hidden'); overlayShown=true; } }
+    async function fetchPredictions(){
+      if(!hour || day===null){ return; }
+      try{
+        techMsg.classList.remove('hidden');
+        // Force spinner if network slow (>300ms) even while skeleton visible
+        const slowTimer = setTimeout(showOverlay, 300);
+        const res = await fetch(`/api/predictions?hour=${encodeURIComponent(hour)}&day=${encodeURIComponent(day)}`);
+        if(!res.ok) throw new Error('API error '+res.status);
+        const data = await res.json();
+        renderResults(data);
+        clearTimeout(slowTimer);
+      }catch(err){
+        document.getElementById('error').classList.remove('hidden');
+        document.getElementById('error').textContent = err.message;
+      }finally{
+        document.getElementById('skeleton').classList.add('hidden');
+        techMsg.classList.add('hidden');
+        if(overlayShown){ overlay.classList.add('fade-out'); setTimeout(()=>overlay.classList.add('hidden'),400); }
+      }
+    }
+    function renderResults(data){
+      const container = document.getElementById('results');
+      const badge = document.getElementById('summary-badge');
+      badge.textContent = `${data.predictions.length} slots`; badge.classList.remove('hidden');
+      const rowsHtml = data.predictions.map((item,i)=>{
+        const prob = item.prob;
+        const statusLabel = prob >=70 ? 'Likely Free' : (prob>=40 ? 'Moderate' : 'Low Chance');
+        const barColor = prob >=70 ? 'bg-green-500' : (prob>=40 ? 'bg-amber-500' : 'bg-red-500');
+        const textColor = prob >=70 ? 'text-green-600' : (prob>=40 ? 'text-amber-600' : 'text-red-600');
+        const badgeColor = prob >=70 ? 'bg-green-50 text-green-700' : (prob>=40 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700');
+        const icon = prob >=70 ? '<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>' : (prob>=40 ? '<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>' : '<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg>');
+        return `<tr class='hover:bg-slate-50 transition revealed' style='animation-delay:${i*60}ms'>
+          <td class='px-4 py-3 font-medium text-slate-800'>${item.slot}</td>
+          <td class='px-4 py-3'>
+            <div class='flex items-center gap-3 w-full max-w-xs'>
+              <div class='flex-1 h-2 rounded-full bg-slate-200 overflow-hidden'>
+                <div class='h-full rounded-full ${barColor}' style='width:${prob.toFixed(1)}%;'></div>
+              </div>
+              <span class='text-xs font-semibold ${textColor}'>${prob.toFixed(1)}%</span>
+            </div>
+          </td>
+          <td class='px-4 py-3'><span class='inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium ${badgeColor}'>${icon} ${statusLabel}</span></td>
+        </tr>`;
+      }).join('');
+      container.innerHTML = `<div class='overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm'><table class='w-full text-sm'>
+        <thead class='bg-slate-50 text-slate-600 uppercase text-xs tracking-wide border-b border-slate-200'><tr><th class='text-left font-medium px-4 py-3'>Slot ID</th><th class='text-left font-medium px-4 py-3'>Probability Free</th><th class='text-left font-medium px-4 py-3'>Status</th></tr></thead>
+        <tbody class='divide-y divide-slate-100'>${rowsHtml}</tbody></table></div>`;
+      container.classList.remove('hidden');
+      // Stats
+      const high = data.predictions.filter(p=>p.prob>=70).length;
+      const mid = data.predictions.filter(p=>p.prob>=40 && p.prob<70).length;
+      const low = data.predictions.filter(p=>p.prob<40).length;
+      document.getElementById('stat-high').textContent = high;
+      document.getElementById('stat-mid').textContent = mid;
+      document.getElementById('stat-low').textContent = low;
+      document.getElementById('stats').classList.remove('hidden');
+    }
+    // Lazy fetch after slight delay to let skeleton show
+    // Mandatory lazy initiation: slight defer to allow first paint, then compute
+    requestIdleCallback ? requestIdleCallback(()=>fetchPredictions()) : setTimeout(fetchPredictions, 250);
+  </script>
+</body>
+</html>
