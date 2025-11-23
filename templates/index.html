@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="AI powered parking availability prediction" />
-    <title>ParkIQ – Smart Parking Intelligence</title>
+    <meta name="description" content="AI model for parking availability prediction using IoT sensors" />
+    <title>ParkIQ AI Model – IoT Sensor Prediction</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -61,17 +61,16 @@
     <header class="w-full border-b border-slate-200 bg-white/90 backdrop-blur-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold shadow-sm">P</div>
+                <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold shadow-sm">AI</div>
                 <div>
-                    <div class="font-semibold text-lg tracking-tight">ParkIQ</div>
-                    <div class="text-xs text-slate-500">Smart Parking Intelligence</div>
+                    <div class="font-semibold text-lg tracking-tight">ParkIQ AI Model</div>
+                    <div class="text-xs text-slate-500">IoT Sensor Prediction</div>
                 </div>
             </div>
             <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
-                <a href="#predict" class="text-slate-600 hover:text-blue-600 transition">Predict</a>
-                <a href="#features" class="text-slate-600 hover:text-blue-600 transition">Features</a>
-                <a href="#how" class="text-slate-600 hover:text-blue-600 transition">How It Works</a>
-                <a href="#contact" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-500 transition shadow-sm">Contact</a>
+                <a href="#predict" class="text-slate-600 hover:text-blue-600 transition">Run Model</a>
+                <a href="#data" class="text-slate-600 hover:text-blue-600 transition">Data Source</a>
+                <a href="#model" class="text-slate-600 hover:text-blue-600 transition">Model Details</a>
             </nav>
         </div>
     </header>
@@ -84,26 +83,26 @@
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col lg:flex-row gap-12">
             <div class="flex-1 text-white" id="hero-heading">
-                <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-6">Predict <span class="gradient-text">Real-Time</span> Parking Availability</h1>
-                <p class="text-lg text-slate-200 max-w-xl mb-8">Leverage machine learning to discover the most probable free parking slots before you arrive. Reduce search time, emissions, and frustration.</p>
+                <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-6">AI Model for <span class="gradient-text">Parking Prediction</span></h1>
+                <p class="text-lg text-slate-200 max-w-xl mb-8">Trained on real IoT sensor data from parking lots. Uses machine learning to predict slot availability probabilities based on time and day patterns.</p>
                 <div class="flex flex-wrap gap-4">
                     <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">
                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
-                        <span>Live Forecast</span>
+                        <span>IoT Sensors</span>
                     </div>
                     <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">
                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                        <span>Fast Response</span>
+                        <span>ML Prediction</span>
                     </div>
                     <div class="flex items-center gap-2 text-sm bg-white/10 backdrop-blur px-4 py-2 rounded-full">
                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
-                        <span>Data Driven</span>
+                        <span>Probability Output</span>
                     </div>
                 </div>
             </div>
             <!-- Quick Form Card -->
             <div id="predict" class="w-full max-w-md glass rounded-xl shadow-xl border border-white/40 p-6">
-                <h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><span class="text-blue-600">🔍</span> Quick Prediction</h2>
+                <h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><span class="text-blue-600">🧠</span> Run AI Model</h2>
                 <form method="GET" action="/predictions" class="space-y-5" id="predict-form">
                     <div>
                         <label for="hour" class="block text-sm font-medium mb-1 text-slate-700">Time of Day (24h)</label>
@@ -124,45 +123,42 @@
                         </select>
                     </div>
                     <button type="submit" id="submit-btn" class="w-full inline-flex justify-center items-center gap-2 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 py-2.5 text-sm font-semibold text-white shadow hover:from-blue-500 hover:to-cyan-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition">
-                        <span id="btn-text">Generate Prediction</span>
+                        <span id="btn-text">Run Prediction</span>
                         <span id="loading-text" class="hidden items-center gap-2"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg> Processing…</span>
                     </button>
                 </form>
-                <div class="mt-6 text-xs text-slate-600 leading-relaxed border-t pt-4">Your input is processed by a trained model using historical occupancy patterns to produce a ranked list of likely free slots.</div>
+                <div class="mt-6 text-xs text-slate-600 leading-relaxed border-t pt-4">Model processes input through trained RandomForestRegressor to output probability rankings for each parking slot.</div>
             </div>
         </div>
         <!-- Scroll CTA (kept) -->
         <button id="scroll-cta" type="button" class="absolute left-1/2 -translate-x-1/2 bottom-6 inline-flex flex-col items-center text-white/90 hover:text-white focus:outline-none" aria-label="Scroll to prediction form">
-            <span class="text-xs tracking-wide mb-1">Start Predicting</span>
+            <span class="text-xs tracking-wide mb-1">Run Model</span>
             <svg class="w-7 h-7 cta-bounce" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m0 0-7-7m7 7 7-7"/></svg>
         </button>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="py-16 bg-white">
+    <!-- Data Source Section -->
+    <section id="data" class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold mb-10 text-center">Why ParkIQ</h2>
-            <div class="grid gap-8 md:grid-cols-3">
+            <h2 class="text-3xl font-bold mb-10 text-center">IoT Sensor Data</h2>
+            <div class="grid gap-8 md:grid-cols-2">
                 <div class="group rounded-xl border border-slate-200 p-6 bg-gradient-to-b from-white to-slate-50 hover:shadow-lg transition">
-                    <img loading="lazy" src="https://images.unsplash.com/photo-1517511620798-cec17d428bc0?auto=format&fit=crop&w=400&q=50" 
-                         srcset="https://images.unsplash.com/photo-1517511620798-cec17d428bc0?auto=format&fit=crop&w=400&q=50 400w, https://images.unsplash.com/photo-1517511620798-cec17d428bc0?auto=format&fit=crop&w=600&q=60 600w" 
-                         data-full="https://images.unsplash.com/photo-1517511620798-cec17d428bc0?auto=format&fit=crop&w=1200&q=70" alt="Data dashboard" class="rounded-md mb-4 h-40 w-full object-cover cursor-zoom-in" />
-                    <h3 class="font-semibold text-lg mb-2">Data Driven Insights</h3>
-                    <p class="text-sm text-slate-600">Advanced statistical modeling and ML to identify temporal free-space patterns with precision.</p>
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Sensor Readings</h3>
+                    <p class="text-sm text-slate-600">Real IoT sensors deployed in parking lots record occupancy status every few minutes. Data includes timestamp, slot ID, and binary availability.</p>
                 </div>
                 <div class="group rounded-xl border border-slate-200 p-6 bg-gradient-to-b from-white to-slate-50 hover:shadow-lg transition">
-                    <img loading="lazy" src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=50" 
-                         srcset="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=50 400w, https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=60 600w" 
-                         data-full="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=70" alt="Lightning speed" class="rounded-md mb-4 h-40 w-full object-cover cursor-zoom-in" />
-                    <h3 class="font-semibold text-lg mb-2">Real-Time Performance</h3>
-                    <p class="text-sm text-slate-600">Optimized inference ensures predictions render in under a second on modern hardware.</p>
-                </div>
-                <div class="group rounded-xl border border-slate-200 p-6 bg-gradient-to-b from-white to-slate-50 hover:shadow-lg transition">
-                    <img loading="lazy" src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=400&q=50" 
-                         srcset="https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=400&q=50 400w, https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=600&q=60 600w" 
-                         data-full="https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=1200&q=70" alt="User experience" class="rounded-md mb-4 h-40 w-full object-cover cursor-zoom-in" />
-                    <h3 class="font-semibold text-lg mb-2">User-Centric Design</h3>
-                    <p class="text-sm text-slate-600">Clear hierarchy, accessible components, and adaptive layouts for every device size.</p>
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Dataset Overview</h3>
+                    <p class="text-sm text-slate-600">~2,700 sensor readings aggregated into hourly patterns. Features include time of day, day of week, and historical occupancy trends.</p>
                 </div>
             </div>
         </div>
@@ -170,73 +166,69 @@
 
     <!-- (Predictions moved to separate page) -->
 
-    <!-- How It Works Section -->
-    <section id="how" class="py-20 bg-white">
+    <!-- Model Details Section -->
+    <section id="model" class="py-20 bg-slate-50">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold mb-10 text-center">How It Works</h2>
-            <ol class="space-y-6">
-                <li class="flex gap-4">
-                    <div class="h-10 w-10 flex-shrink-0 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">1</div>
+            <h2 class="text-3xl font-bold mb-10 text-center">AI Model Architecture</h2>
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-slate-200">
+                <div class="grid gap-6 md:grid-cols-2">
                     <div>
-                        <h3 class="font-semibold mb-1">Input Time & Day</h3>
-                        <p class="text-sm text-slate-600">You provide the target arrival window and weekday context.</p>
+                        <h3 class="font-semibold text-lg mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                            Algorithm
+                        </h3>
+                        <p class="text-sm text-slate-600 mb-4">RandomForestRegressor in MultiOutputRegressor configuration for handling multiple parking slots simultaneously.</p>
+                        <div class="bg-slate-50 p-4 rounded-lg font-mono text-sm">
+                            <div class="text-green-600"># Model setup</div>
+                            <div>from sklearn.ensemble import RandomForestRegressor</div>
+                            <div>from sklearn.multioutput import MultiOutputRegressor</div>
+                            <div>model = MultiOutputRegressor(RandomForestRegressor())</div>
+                        </div>
                     </div>
-                </li>
-                <li class="flex gap-4">
-                    <div class="h-10 w-10 flex-shrink-0 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">2</div>
                     <div>
-                        <h3 class="font-semibold mb-1">Model Inference</h3>
-                        <p class="text-sm text-slate-600">Historical occupancy patterns are combined with temporal features to score slots.</p>
+                        <h3 class="font-semibold text-lg mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            Features
+                        </h3>
+                        <ul class="text-sm text-slate-600 space-y-2">
+                            <li>• Hour of day (0-23)</li>
+                            <li>• Day of week (0-6)</li>
+                            <li>• Historical occupancy patterns</li>
+                            <li>• Temporal trends</li>
+                        </ul>
+                        <div class="mt-4 bg-slate-50 p-4 rounded-lg font-mono text-sm">
+                            <div class="text-green-600"># Feature vector</div>
+                            <div>features = [hour, day_of_week]</div>
+                            <div>predictions = model.predict_proba(features)</div>
+                        </div>
                     </div>
-                </li>
-                <li class="flex gap-4">
-                    <div class="h-10 w-10 flex-shrink-0 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">3</div>
-                    <div>
-                        <h3 class="font-semibold mb-1">Ranked Recommendations</h3>
-                        <p class="text-sm text-slate-600">You receive an ordered list emphasizing the highest likelihood of availability.</p>
-                    </div>
-                </li>
-            </ol>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer id="contact" class="border-t border-slate-200 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <footer class="border-t border-slate-200 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col md:flex-row justify-between gap-8">
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <div class="h-9 w-9 rounded-md bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold">P</div>
-                        <span class="font-semibold">ParkIQ</span>
+                        <div class="h-9 w-9 rounded-md bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold">AI</div>
+                        <span class="font-semibold">ParkIQ AI Model</span>
                     </div>
-                    <p class="text-sm text-slate-600 max-w-sm">Delivering predictive parking intelligence that saves time and reduces congestion.</p>
+                    <p class="text-sm text-slate-600 max-w-sm">Machine learning model for parking availability prediction using IoT sensor data.</p>
                 </div>
-                <div class="grid grid-cols-2 gap-8 text-sm">
-                    <div>
-                        <h4 class="font-semibold mb-3">Product</h4>
-                        <ul class="space-y-2">
-                            <li><a href="#features" class="text-slate-600 hover:text-blue-600 transition">Features</a></li>
-                            <li><a href="#how" class="text-slate-600 hover:text-blue-600 transition">How It Works</a></li>
-                            <li><a href="#predict" class="text-slate-600 hover:text-blue-600 transition">Prediction</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold mb-3">Support</h4>
-                        <ul class="space-y-2">
-                            <li><a href="#" class="text-slate-600 hover:text-blue-600 transition">Docs</a></li>
-                            <li><a href="#" class="text-slate-600 hover:text-blue-600 transition">API</a></li>
-                            <li><a href="#contact" class="text-slate-600 hover:text-blue-600 transition">Contact</a></li>
-                        </ul>
-                    </div>
+                <div class="text-sm text-slate-500">
+                    <p>Built with scikit-learn & Flask</p>
+                    <p>Dataset: ~2,700 IoT sensor readings</p>
                 </div>
             </div>
-            <div class="mt-10 pt-6 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row justify-between gap-4">
-                <span>© 2025 ParkIQ. All rights reserved.</span>
-                <div class="flex gap-4">
-                    <a href="#" class="hover:text-blue-600">Privacy</a>
-                    <a href="#" class="hover:text-blue-600">Terms</a>
-                    <a href="#" class="hover:text-blue-600">Status</a>
-                </div>
+            <div class="mt-8 pt-6 border-t border-slate-200 text-xs text-slate-500 text-center">
+                <span>© 2025 ParkIQ AI Model Demo</span>
             </div>
         </div>
     </footer>
