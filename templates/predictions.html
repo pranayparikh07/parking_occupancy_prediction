@@ -1,164 +1,389 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ParkIQ – Predictions</title>
+  <title>ParkIQ – Inference Results</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            slate: {
+              850: '#151f32',
+              900: '#0f172a',
+              950: '#020617',
+            },
+            primary: {
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+            },
+            accent: {
+              400: '#818cf8',
+              500: '#6366f1',
+            }
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    body { font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; }
-    .shimmer { position:relative; overflow:hidden; background:#f1f5f9; }
-    .shimmer::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.7) 50%,rgba(255,255,255,0) 100%); animation:shimmer 1.6s infinite; }
-    @keyframes shimmer { 0% { transform:translateX(-100%);} 100% { transform:translateX(100%);} }
-    @keyframes row-reveal { 0% { opacity:0; transform:translateY(8px);} 100% { opacity:1; transform:translateY(0);} }
-    .revealed { animation:row-reveal .45s ease forwards; }
-    /* Spinner */
-    @keyframes spin { to { transform:rotate(360deg);} }
-    .spinner { width:42px; height:42px; border:4px solid #e2e8f0; border-top-color:#2563eb; border-radius:50%; animation:spin .9s linear infinite; }
-    .loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:40; backdrop-filter:blur(4px); }
-    .fade-out { animation:fadeOut .4s ease forwards; }
-    @keyframes fadeOut { to { opacity:0; visibility:hidden; } }
+    body {
+      background-color: #020617;
+      color: #f8fafc;
+    }
+
+    .glass-panel {
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .shimmer {
+      position: relative;
+      overflow: hidden;
+      background: rgba(51, 65, 85, 0.5);
+    }
+
+    .shimmer::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
+      animation: shimmer 1.6s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    @keyframes row-reveal {
+      0% {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .revealed {
+      animation: row-reveal .45s ease forwards;
+    }
+
+    /* Tech Spinner */
+    .spinner-ring {
+      width: 40px;
+      height: 40px;
+      border: 2px solid transparent;
+      border-top-color: #38bdf8;
+      border-right-color: #38bdf8;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+
+    .fade-out {
+      animation: fadeOut .4s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-800">
-  <header class="w-full border-b border-slate-200 bg-white/90 backdrop-blur-sm sticky top-0 z-50">
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold shadow-sm">P</div>
+        <div
+          class="h-8 w-8 rounded bg-gradient-to-tr from-primary-600 to-accent-600 flex items-center justify-center text-white font-bold text-sm">
+          P</div>
         <div>
-          <div class="font-semibold text-lg tracking-tight">ParkIQ</div>
-          <div class="text-xs text-slate-500">Predicted Availability</div>
+          <div class="font-bold text-lg tracking-tight text-white">Park<span class="text-primary-400">IQ</span></div>
+          <div class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Inference Engine</div>
         </div>
       </div>
-      <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
-        <a href="/" class="text-slate-600 hover:text-blue-600 transition">Home</a>
+      <nav class="flex items-center gap-6 text-sm font-medium">
+        <a href="/" class="text-slate-400 hover:text-primary-400 transition flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          New Query
+        </a>
       </nav>
     </div>
   </header>
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-semibold">Predicted Available Slots</h1>
-      <div id="summary-badge" class="hidden items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"></div>
-    </div>
-    <div id="params-info" class="text-sm text-slate-600 mb-4"></div>
-    <div id="tech-loading" class="text-xs text-slate-500 mb-4 hidden">Computing parking occupancy inference pipeline… applying probabilistic slot ranking.</div>
-    <div id="skeleton" class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <table class="w-full text-sm">
-        <thead class="bg-slate-50 text-slate-600 uppercase text-xs tracking-wide border-b border-slate-200">
-          <tr>
-            <th class="text-left font-medium px-4 py-3">Slot ID</th>
-            <th class="text-left font-medium px-4 py-3">Probability Free</th>
-            <th class="text-left font-medium px-4 py-3">Status</th>
-          </tr>
-        </thead>
-        <tbody id="skeleton-rows" class="divide-y divide-slate-100">
-          <!-- 10 placeholder rows -->
-          <script>
-            for(let i=0;i<10;i++){
-              document.write(`<tr><td class='px-4 py-3'><div class='h-4 w-24 shimmer rounded'></div></td><td class='px-4 py-3'><div class='h-4 w-40 shimmer rounded'></div></td><td class='px-4 py-3'><div class='h-4 w-28 shimmer rounded'></div></td></tr>`)
-            }
-          </script>
-        </tbody>
-      </table>
-    </div>
-    <div id="results" class="hidden"></div>
-    <div id="error" class="hidden mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700"></div>
-    <div id="stats" class="hidden grid sm:grid-cols-3 gap-6 mt-10" aria-label="Summary statistics">
-      <div class="rounded-lg border border-slate-200 bg-white p-5">
-        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">High Availability</p>
-        <p id="stat-high" class="mt-2 text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">0</p>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-white mb-1">Inference Results</h1>
+        <div id="params-info" class="text-sm font-mono text-slate-500">Initializing parameters...</div>
       </div>
-      <div class="rounded-lg border border-slate-200 bg-white p-5">
-        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Moderate</p>
-        <p id="stat-mid" class="mt-2 text-3xl font-bold bg-gradient-to-r from-amber-500 to-yellow-400 bg-clip-text text-transparent">0</p>
-      </div>
-      <div class="rounded-lg border border-slate-200 bg-white p-5">
-        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Limited</p>
-        <p id="stat-low" class="mt-2 text-3xl font-bold bg-gradient-to-r from-red-600 to-rose-500 bg-clip-text text-transparent">0</p>
+      <div id="summary-badge"
+        class="hidden items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-sm font-mono">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+        </span>
+        <span id="badge-text">Processing</span>
       </div>
     </div>
+
+    <div id="tech-loading" class="text-xs font-mono text-primary-400/70 mb-4 hidden animate-pulse">
+      > ESTABLISHING CONNECTION TO INFERENCE PIPELINE...
+      <br>> LOADING PROBABILISTIC MODELS...
+    </div>
+
+    <!-- Skeleton Loader -->
+    <div id="skeleton" class="glass-panel rounded-xl overflow-hidden">
+      <div
+        class="grid grid-cols-3 bg-slate-900/50 border-b border-slate-800 px-6 py-3 text-xs font-mono text-slate-500 uppercase tracking-wider">
+        <div>Slot Identifier</div>
+        <div>Availability Confidence</div>
+        <div>Status</div>
+      </div>
+      <div class="divide-y divide-slate-800/50">
+        <script>
+          for (let i = 0; i < 8; i++) {
+            document.write(`<div class="grid grid-cols-3 px-6 py-4 items-center">
+              <div><div class="h-4 w-16 shimmer rounded"></div></div>
+              <div><div class="h-4 w-32 shimmer rounded"></div></div>
+              <div><div class="h-4 w-20 shimmer rounded"></div></div>
+            </div>`)
+          }
+        </script>
+      </div>
+    </div>
+
+    <!-- Results Container -->
+    <div id="results" class="hidden space-y-8"></div>
+
+    <!-- Error Message -->
+    <div id="error"
+      class="hidden mt-6 rounded-lg border border-red-900/50 bg-red-900/10 p-4 text-sm text-red-400 font-mono"></div>
+
+    <!-- Stats Dashboard -->
+    <div id="stats" class="hidden grid sm:grid-cols-3 gap-6 mt-8">
+      <div class="glass-panel rounded-xl p-6 border-t-4 border-t-green-500">
+        <p class="text-xs font-mono text-slate-500 uppercase tracking-wider">High Probability</p>
+        <p id="stat-high" class="mt-2 text-4xl font-bold text-white">0</p>
+        <p class="text-xs text-slate-400 mt-1">Slots > 70% Free</p>
+      </div>
+      <div class="glass-panel rounded-xl p-6 border-t-4 border-t-amber-500">
+        <p class="text-xs font-mono text-slate-500 uppercase tracking-wider">Moderate</p>
+        <p id="stat-mid" class="mt-2 text-4xl font-bold text-white">0</p>
+        <p class="text-xs text-slate-400 mt-1">Slots 40-70% Free</p>
+      </div>
+      <div class="glass-panel rounded-xl p-6 border-t-4 border-t-red-500">
+        <p class="text-xs font-mono text-slate-500 uppercase tracking-wider">Congested</p>
+        <p id="stat-low" class="mt-2 text-4xl font-bold text-white">0</p>
+        <p class="text-xs text-slate-400 mt-1">Slots < 40% Free</p>
+      </div>
+    </div>
+
   </main>
-  <!-- Spinner Fallback -->
-  <div id="loading-overlay" class="loading-overlay hidden" aria-label="Loading predictions">
-    <div class="spinner mb-4"></div>
-    <p class="text-sm font-medium text-slate-600">Computing your parking availability model…</p>
-    <p class="text-[11px] text-slate-500 mt-1">Performing temporal feature synthesis & probability calibration</p>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="spinner-ring mb-6"></div>
+    <p class="text-lg font-medium text-white tracking-tight">Running Inference Model</p>
+    <div class="mt-2 font-mono text-xs text-primary-400">
+      <span id="loading-text">Initializing tensors...</span>
+    </div>
   </div>
+
   <script>
     const qp = new URLSearchParams(window.location.search);
     const hour = qp.get('hour');
     const day = qp.get('day');
     const paramsEl = document.getElementById('params-info');
-    if(hour && day !== null) {
-      paramsEl.textContent = `Request parameters: hour=${hour}, day=${day}`;
+
+    if (hour && day !== null) {
+      paramsEl.innerHTML = `Query Parameters: <span class="text-primary-400">Hour ${hour}:00</span> • <span class="text-primary-400">Day Index ${day}</span>`;
     } else {
-      paramsEl.textContent = 'Missing parameters. Please go back and enter prediction values.';
+      paramsEl.textContent = 'Error: Missing temporal parameters.';
+      paramsEl.classList.add('text-red-400');
     }
+
     let overlayShown = false;
     const overlay = document.getElementById('loading-overlay');
     const techMsg = document.getElementById('tech-loading');
-    function showOverlay(){ if(!overlayShown){ overlay.classList.remove('hidden'); overlayShown=true; } }
-    async function fetchPredictions(){
-      if(!hour || day===null){ return; }
-      try{
+    const loadingText = document.getElementById('loading-text');
+
+    const loadingSteps = [
+      "Loading historical sensor data...",
+      "Normalizing input vectors...",
+      "Running probabilistic regression...",
+      "Generating confidence intervals..."
+    ];
+
+    function showOverlay() {
+      if (!overlayShown) {
+        overlay.classList.remove('hidden');
+        overlayShown = true;
+
+        // Cycle loading text
+        let step = 0;
+        const interval = setInterval(() => {
+          if (step < loadingSteps.length) {
+            loadingText.textContent = loadingSteps[step];
+            step++;
+          } else {
+            clearInterval(interval);
+          }
+        }, 800);
+      }
+    }
+
+    async function fetchPredictions() {
+      if (!hour || day === null) { return; }
+      try {
         techMsg.classList.remove('hidden');
-        // Force spinner if network slow (>300ms) even while skeleton visible
         const slowTimer = setTimeout(showOverlay, 300);
+
         const res = await fetch(`/api/predictions?hour=${encodeURIComponent(hour)}&day=${encodeURIComponent(day)}`);
-        if(!res.ok) throw new Error('API error '+res.status);
+        if (!res.ok) throw new Error('API Gateway Error: ' + res.status);
+
         const data = await res.json();
         renderResults(data);
         clearTimeout(slowTimer);
-      }catch(err){
+      } catch (err) {
         document.getElementById('error').classList.remove('hidden');
-        document.getElementById('error').textContent = err.message;
-      }finally{
+        document.getElementById('error').textContent = `SYSTEM ERROR: ${err.message}`;
+      } finally {
         document.getElementById('skeleton').classList.add('hidden');
         techMsg.classList.add('hidden');
-        if(overlayShown){ overlay.classList.add('fade-out'); setTimeout(()=>overlay.classList.add('hidden'),400); }
+        if (overlayShown) { overlay.classList.add('fade-out'); setTimeout(() => overlay.classList.add('hidden'), 400); }
       }
     }
-    function renderResults(data){
+
+    function renderResults(data) {
       const container = document.getElementById('results');
       const badge = document.getElementById('summary-badge');
-      badge.textContent = `${data.predictions.length} slots`; badge.classList.remove('hidden');
-      const rowsHtml = data.predictions.map((item,i)=>{
+      const badgeText = document.getElementById('badge-text');
+
+      badgeText.textContent = `${data.predictions.length} DATA POINTS ANALYZED`;
+      badge.classList.remove('hidden');
+      badge.classList.add('flex');
+
+      const rowsHtml = data.predictions.map((item, i) => {
         const prob = item.prob;
-        const statusLabel = prob >=70 ? 'Likely Free' : (prob>=40 ? 'Moderate' : 'Low Chance');
-        const barColor = prob >=70 ? 'bg-green-500' : (prob>=40 ? 'bg-amber-500' : 'bg-red-500');
-        const textColor = prob >=70 ? 'text-green-600' : (prob>=40 ? 'text-amber-600' : 'text-red-600');
-        const badgeColor = prob >=70 ? 'bg-green-50 text-green-700' : (prob>=40 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700');
-        const icon = prob >=70 ? '<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>' : (prob>=40 ? '<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>' : '<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg>');
-        return `<tr class='hover:bg-slate-50 transition revealed' style='animation-delay:${i*60}ms'>
-          <td class='px-4 py-3 font-medium text-slate-800'>${item.slot}</td>
-          <td class='px-4 py-3'>
-            <div class='flex items-center gap-3 w-full max-w-xs'>
-              <div class='flex-1 h-2 rounded-full bg-slate-200 overflow-hidden'>
-                <div class='h-full rounded-full ${barColor}' style='width:${prob.toFixed(1)}%;'></div>
-              </div>
-              <span class='text-xs font-semibold ${textColor}'>${prob.toFixed(1)}%</span>
+        // Status logic
+        let statusLabel, statusColor, barColor, icon;
+
+        if (prob >= 70) {
+          statusLabel = 'LIKELY AVAILABLE';
+          statusColor = 'text-green-400 bg-green-400/10 border-green-400/20';
+          barColor = 'bg-green-500';
+          icon = '<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
+        } else if (prob >= 40) {
+          statusLabel = 'MODERATE LOAD';
+          statusColor = 'text-amber-400 bg-amber-400/10 border-amber-400/20';
+          barColor = 'bg-amber-500';
+          icon = '<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+        } else {
+          statusLabel = 'HIGH CONGESTION';
+          statusColor = 'text-red-400 bg-red-400/10 border-red-400/20';
+          barColor = 'bg-red-500';
+          icon = '<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
+        }
+
+        return `<div class='glass-panel rounded-lg p-4 flex items-center justify-between hover:bg-slate-800/50 transition revealed' style='animation-delay:${i * 50}ms'>
+          <div class="flex items-center gap-4 w-1/4">
+            <div class="h-8 w-8 rounded bg-slate-800 flex items-center justify-center font-mono text-xs text-slate-400 border border-slate-700">
+              ${item.slot.replace('Slot', '')}
             </div>
-          </td>
-          <td class='px-4 py-3'><span class='inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium ${badgeColor}'>${icon} ${statusLabel}</span></td>
-        </tr>`;
+            <div class="font-medium text-slate-200">${item.slot}</div>
+          </div>
+          
+          <div class="flex-1 px-8">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-500">Probability</span>
+              <span class="${prob >= 70 ? 'text-green-400' : (prob >= 40 ? 'text-amber-400' : 'text-red-400')} font-mono">${prob.toFixed(1)}%</span>
+            </div>
+            <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+              <div class="h-full rounded-full ${barColor} transition-all duration-1000 ease-out" style="width: 0%" onload="this.style.width='${prob.toFixed(1)}%'"></div>
+            </div>
+          </div>
+
+          <div class="w-1/4 flex justify-end">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border text-[10px] font-bold tracking-wider ${statusColor}">
+              ${icon} ${statusLabel}
+            </span>
+          </div>
+        </div>`;
       }).join('');
-      container.innerHTML = `<div class='overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm'><table class='w-full text-sm'>
-        <thead class='bg-slate-50 text-slate-600 uppercase text-xs tracking-wide border-b border-slate-200'><tr><th class='text-left font-medium px-4 py-3'>Slot ID</th><th class='text-left font-medium px-4 py-3'>Probability Free</th><th class='text-left font-medium px-4 py-3'>Status</th></tr></thead>
-        <tbody class='divide-y divide-slate-100'>${rowsHtml}</tbody></table></div>`;
+
+      container.innerHTML = rowsHtml;
+
+      // Animate bars after render
+      setTimeout(() => {
+        const bars = container.querySelectorAll('[onload]');
+        bars.forEach(bar => {
+          bar.style.width = bar.getAttribute('onload').match(/'([^']+)'/)[1];
+        });
+      }, 100);
+
       container.classList.remove('hidden');
+
       // Stats
-      const high = data.predictions.filter(p=>p.prob>=70).length;
-      const mid = data.predictions.filter(p=>p.prob>=40 && p.prob<70).length;
-      const low = data.predictions.filter(p=>p.prob<40).length;
+      const high = data.predictions.filter(p => p.prob >= 70).length;
+      const mid = data.predictions.filter(p => p.prob >= 40 && p.prob < 70).length;
+      const low = data.predictions.filter(p => p.prob < 40).length;
+
       document.getElementById('stat-high').textContent = high;
       document.getElementById('stat-mid').textContent = mid;
       document.getElementById('stat-low').textContent = low;
+
       document.getElementById('stats').classList.remove('hidden');
     }
-    // Lazy fetch after slight delay to let skeleton show
-    // Mandatory lazy initiation: slight defer to allow first paint, then compute
-    requestIdleCallback ? requestIdleCallback(()=>fetchPredictions()) : setTimeout(fetchPredictions, 250);
+
+    requestIdleCallback ? requestIdleCallback(() => fetchPredictions()) : setTimeout(fetchPredictions, 250);
   </script>
 </body>
+
 </html>
