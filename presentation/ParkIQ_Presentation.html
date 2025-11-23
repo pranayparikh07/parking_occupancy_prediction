@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ParkIQ – Executive Deck</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Feather Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #0ea5e9;
+            --accent: #f43f5e;
+            --dark: #0f172a;
+            --light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow: hidden;
+            /* Prevent scrolling for deck feel */
+        }
+
+        .deck {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 6rem 4rem;
+            /* More padding for breathing room */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.98) translateY(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+            z-index: 10;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37, 99, 235, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -12px rgba(37, 99, 235, 0.15);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            color: var(--dark);
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        /* Animations */
+        .stagger-1 {
+            animation-delay: 100ms;
+        }
+
+        .stagger-2 {
+            animation-delay: 200ms;
+        }
+
+        .stagger-3 {
+            animation-delay: 300ms;
+        }
+
+        .fade-up {
+            opacity: 0;
+            animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Custom Scrollbar for code blocks if needed */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div id="deck-progress" class="progress-bar"></div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button id="prevBtn" class="nav-btn" aria-label="Previous slide">
+            <i data-feather="chevron-left"></i>
+        </button>
+        <button id="nextBtn" class="nav-btn" aria-label="Next slide">
+            <i data-feather="chevron-right"></i>
+        </button>
+    </div>
+
+    <main id="deck" class="deck">
+        <!-- Slide 1: Title -->
+        <section class="slide active" data-title="Title">
+            <div class="max-w-4xl mx-auto text-center">
+                <div
+                    class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white mb-8 shadow-lg shadow-blue-500/30 fade-up stagger-1">
+                    <span class="text-4xl font-bold">P</span>
+                </div>
+                <h1 class="text-6xl font-bold mb-6 gradient-text fade-up stagger-2">ParkIQ</h1>
+                <p class="text-2xl text-slate-600 mb-8 fade-up stagger-3">Smart Parking Intelligence</p>
+                <div
+                    class="inline-block px-6 py-3 rounded-full bg-white border border-slate-200 text-slate-500 text-sm font-medium fade-up stagger-3">
+                    Executive Deck &bull; 2025
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Why This Matters -->
+        <section class="slide" data-title="Why This Matters">
+            <div class="max-w-6xl mx-auto w-full">
+                <h2 class="text-4xl font-bold mb-12 gradient-text">Why This Matters</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="card fade-up stagger-1">
+                        <div class="icon-box">
+                            <i data-feather="clock"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Wasted Time</h3>
+                        <p class="text-slate-600">Drivers spend an average of 17 hours a year searching for parking
+                            spots.</p>
+                    </div>
+                    <div class="card fade-up stagger-2">
+                        <div class="icon-box">
+                            <i data-feather="frown"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Frustration</h3>
+                        <p class="text-slate-600">Circling for parking creates unnecessary stress and traffic
+                            congestion.</p>
+                    </div>
+                    <div class="card fade-up stagger-3">
+                        <div class="icon-box">
+                            <i data-feather="eye-off"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">No Visibility</h3>
+                        <p class="text-slate-600">Cities lack simple, real-time availability info for drivers.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: What ParkIQ Does -->
+        <section class="slide" data-title="What ParkIQ Does">
+            <div class="max-w-6xl mx-auto w-full flex items-center gap-12">
+                <div class="flex-1">
+                    <h2 class="text-4xl font-bold mb-8 gradient-text">What ParkIQ Does</h2>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4 fade-up stagger-1">
+                            <div
+                                class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i data-feather="check" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-1">Predictive Intelligence</h3>
+                                <p class="text-slate-600">Shows which parking spots are likely to be free right now.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 fade-up stagger-2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i data-feather="list" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-1">Smart Ranking</h3>
+                                <p class="text-slate-600">Gives a ranked list: best options first.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 fade-up stagger-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i data-feather="smile" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-1">Stress Reduction</h3>
+                                <p class="text-slate-600">Helps reduce driving time → saves fuel & stress.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 hidden md:block fade-up stagger-2">
+                    <div class="card bg-gradient-to-br from-slate-900 to-slate-800 text-white border-none p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="text-sm text-slate-400">Current Status</span>
+                            <span
+                                class="px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs font-medium">Live</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div
+                                class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/10">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                                    <span>Slot A-12</span>
+                                </div>
+                                <span class="text-green-400 font-mono">94% Free</span>
+                            </div>
+                            <div
+                                class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/10">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                                    <span>Slot B-08</span>
+                                </div>
+                                <span class="text-green-400 font-mono">88% Free</span>
+                            </div>
+                            <div
+                                class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/10">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                                    <span>Slot A-04</span>
+                                </div>
+                                <span class="text-yellow-400 font-mono">45% Free</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Where Data Comes From -->
+        <section class="slide" data-title="Data Source">
+            <div class="max-w-5xl mx-auto w-full text-center">
+                <h2 class="text-4xl font-bold mb-12 gradient-text">Data Source</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="card fade-up stagger-1 text-left">
+                        <div class="icon-box">
+                            <i data-feather="radio"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">IoT Sensors</h3>
+                        <p class="text-slate-600">Parking sensors record when a slot is free or occupied in real-time.
+                        </p>
+                    </div>
+                    <div class="card fade-up stagger-2 text-left">
+                        <div class="icon-box">
+                            <i data-feather="database"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Structured Data</h3>
+                        <p class="text-slate-600">Each reading captures: Timestamp + Slot ID + Status (Free/Busy).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Visual Flow -->
+        <section class="slide" data-title="Flow">
+            <div class="max-w-6xl mx-auto w-full">
+                <h2 class="text-4xl font-bold mb-16 gradient-text text-center">How It Works</h2>
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 relative">
+                    <!-- Connecting Line -->
+                    <div
+                        class="absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -z-10 hidden md:block transform -translate-y-1/2">
+                    </div>
+
+                    <div class="card w-full md:w-64 text-center fade-up stagger-1 bg-white">
+                        <div
+                            class="w-12 h-12 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4">
+                            <i data-feather="radio"></i>
+                        </div>
+                        <h3 class="font-bold mb-1">Sensors</h3>
+                        <p class="text-xs text-slate-500">Raw Data Collection</p>
+                    </div>
+
+                    <div class="card w-full md:w-64 text-center fade-up stagger-2 bg-white">
+                        <div
+                            class="w-12 h-12 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4">
+                            <i data-feather="filter"></i>
+                        </div>
+                        <h3 class="font-bold mb-1">Cleaning</h3>
+                        <p class="text-xs text-slate-500">Processing & Validation</p>
+                    </div>
+
+                    <div class="card w-full md:w-64 text-center fade-up stagger-3 bg-white">
+                        <div
+                            class="w-12 h-12 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4">
+                            <i data-feather="cpu"></i>
+                        </div>
+                        <h3 class="font-bold mb-1">Model</h3>
+                        <p class="text-xs text-slate-500">Pattern Recognition</p>
+                    </div>
+
+                    <div class="card w-full md:w-64 text-center fade-up stagger-4 bg-white">
+                        <div
+                            class="w-12 h-12 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4">
+                            <i data-feather="smartphone"></i>
+                        </div>
+                        <h3 class="font-bold mb-1">Web App</h3>
+                        <p class="text-xs text-slate-500">User Interface</p>
+                    </div>
+                </div>
+                <p class="text-center text-slate-500 mt-12 fade-up stagger-4">Like weather forecasting, but for parking.
+                </p>
+            </div>
+        </section>
+
+        <!-- Slide 6: Model Thinking -->
+        <section class="slide" data-title="Model">
+            <div class="max-w-5xl mx-auto w-full">
+                <h2 class="text-4xl font-bold mb-12 gradient-text">How the Model Thinks</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card fade-up stagger-1">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i data-feather="calendar" class="text-blue-600"></i>
+                            Pattern Learning
+                        </h3>
+                        <p class="text-slate-600">It learns peak hours, weekdays vs weekends, and seasonal trends.</p>
+                    </div>
+                    <div class="card fade-up stagger-2">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i data-feather="clock" class="text-blue-600"></i>
+                            Time Analysis
+                        </h3>
+                        <p class="text-slate-600">It studies exactly when each specific slot is usually free.</p>
+                    </div>
+                    <div class="card fade-up stagger-3">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i data-feather="trending-up" class="text-blue-600"></i>
+                            Future Prediction
+                        </h3>
+                        <p class="text-slate-600">Predicts availability based on historical data and current trends.</p>
+                    </div>
+                    <div class="card fade-up stagger-4">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i data-feather="check-circle" class="text-blue-600"></i>
+                            Simple Output
+                        </h3>
+                        <p class="text-slate-600">No complex jargon — just a clear probability of availability.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: User Experience -->
+        <section class="slide" data-title="User Experience">
+            <div class="max-w-6xl mx-auto w-full flex items-center gap-12">
+                <div class="flex-1">
+                    <h2 class="text-4xl font-bold mb-8 gradient-text">User Experience</h2>
+                    <div class="space-y-4">
+                        <div class="card fade-up stagger-1 border-l-4 border-l-blue-500">
+                            <h3 class="font-bold">1. Input</h3>
+                            <p class="text-slate-600 text-sm">Enter time → tap predict</p>
+                        </div>
+                        <div class="card fade-up stagger-2 border-l-4 border-l-blue-500">
+                            <h3 class="font-bold">2. Process</h3>
+                            <p class="text-slate-600 text-sm">Fast results under 1 second</p>
+                        </div>
+                        <div class="card fade-up stagger-3 border-l-4 border-l-blue-500">
+                            <h3 class="font-bold">3. Result</h3>
+                            <p class="text-slate-600 text-sm">Clean list of likely free spots</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 flex justify-center fade-up stagger-2">
+                    <!-- Mobile Mockup -->
+                    <div
+                        class="w-64 h-[500px] bg-slate-900 rounded-[3rem] p-4 shadow-2xl border-4 border-slate-800 relative overflow-hidden">
+                        <div
+                            class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-xl z-10">
+                        </div>
+                        <div class="h-full bg-white rounded-[2rem] overflow-hidden flex flex-col">
+                            <div class="bg-blue-600 p-6 pt-12 text-white">
+                                <h4 class="font-bold">Find Spot</h4>
+                                <p class="text-xs opacity-80">Near Building A</p>
+                            </div>
+                            <div class="p-4 space-y-3 bg-slate-50 flex-1">
+                                <div
+                                    class="p-3 bg-white rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-slate-800">A-12</div>
+                                        <div class="text-xs text-slate-500">Level 1</div>
+                                    </div>
+                                    <div class="text-green-600 font-bold">94%</div>
+                                </div>
+                                <div
+                                    class="p-3 bg-white rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-slate-800">B-08</div>
+                                        <div class="text-xs text-slate-500">Level 2</div>
+                                    </div>
+                                    <div class="text-green-600 font-bold">88%</div>
+                                </div>
+                                <div
+                                    class="p-3 bg-white rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-slate-800">A-04</div>
+                                        <div class="text-xs text-slate-500">Level 1</div>
+                                    </div>
+                                    <div class="text-yellow-600 font-bold">45%</div>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-white border-t">
+                                <button
+                                    class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold text-sm">Navigate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Non-Technical Users -->
+        <section class="slide" data-title="Non-Technical Appeal">
+            <div class="max-w-5xl mx-auto w-full">
+                <h2 class="text-4xl font-bold mb-12 gradient-text">Why Users Love It</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card fade-up stagger-1">
+                        <div class="icon-box">
+                            <i data-feather="thumbs-up"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Simple & Clear</h3>
+                        <p class="text-slate-600">No confusing graphs or dashboards. Just practical answers.</p>
+                    </div>
+                    <div class="card fade-up stagger-2">
+                        <div class="icon-box">
+                            <i data-feather="map-pin"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Actionable</h3>
+                        <p class="text-slate-600">Answers the only question that matters: "Where can I park now?"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Cities & Campuses -->
+        <section class="slide" data-title="Cities & Campuses">
+            <div class="max-w-6xl mx-auto w-full">
+                <h2 class="text-4xl font-bold mb-12 gradient-text">Impact for Cities & Campuses</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="card text-center fade-up stagger-1">
+                        <div
+                            class="w-16 h-16 mx-auto bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+                            <i data-feather="wind"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">Less Emissions</h3>
+                        <p class="text-xs text-slate-500">Reduced circling means less fuel wastage.</p>
+                    </div>
+                    <div class="card text-center fade-up stagger-2">
+                        <div
+                            class="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+                            <i data-feather="activity"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">Better Flow</h3>
+                        <p class="text-xs text-slate-500">Smoother traffic and lower congestion.</p>
+                    </div>
+                    <div class="card text-center fade-up stagger-3">
+                        <div
+                            class="w-16 h-16 mx-auto bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4">
+                            <i data-feather="pie-chart"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">Utilization</h3>
+                        <p class="text-xs text-slate-500">Optimized use of available parking assets.</p>
+                    </div>
+                    <div class="card text-center fade-up stagger-4">
+                        <div
+                            class="w-16 h-16 mx-auto bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mb-4">
+                            <i data-feather="smile"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">Satisfaction</h3>
+                        <p class="text-xs text-slate-500">Happier drivers and better experience.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 10: Roadmap -->
+        <section class="slide" data-title="Roadmap">
+            <div class="max-w-5xl mx-auto w-full">
+                <h2 class="text-4xl font-bold mb-12 gradient-text">Roadmap</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-6 fade-up stagger-1">
+                        <div class="w-24 text-right font-bold text-blue-600">Phase 1</div>
+                        <div class="flex-1 card py-4">Clean predictions for single area</div>
+                    </div>
+                    <div class="flex items-center gap-6 fade-up stagger-2">
+                        <div class="w-24 text-right font-bold text-blue-600">Phase 2</div>
+                        <div class="flex-1 card py-4">Smart features (holidays, events)</div>
+                    </div>
+                    <div class="flex items-center gap-6 fade-up stagger-3">
+                        <div class="w-24 text-right font-bold text-blue-600">Phase 3</div>
+                        <div class="flex-1 card py-4">Live sensor integration</div>
+                    </div>
+                    <div class="flex items-center gap-6 fade-up stagger-4">
+                        <div class="w-24 text-right font-bold text-slate-400">Phase 4</div>
+                        <div class="flex-1 card py-4 bg-slate-50 text-slate-500">Mobile app + maps</div>
+                    </div>
+                    <div class="flex items-center gap-6 fade-up stagger-5">
+                        <div class="w-24 text-right font-bold text-slate-400">Phase 5</div>
+                        <div class="flex-1 card py-4 bg-slate-50 text-slate-500">Multi-city scalability</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 11: Summary -->
+        <section class="slide" data-title="Summary">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-12 gradient-text">Summary</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                    <div class="card fade-up stagger-1">
+                        <h3 class="font-bold mb-2 text-blue-600">Simple</h3>
+                        <p class="text-slate-600">ParkIQ predicts parking availability in a way anyone can understand.
+                        </p>
+                    </div>
+                    <div class="card fade-up stagger-2">
+                        <h3 class="font-bold mb-2 text-blue-600">Fast</h3>
+                        <p class="text-slate-600">Non-technical users get clear answers in seconds.</p>
+                    </div>
+                    <div class="card fade-up stagger-3">
+                        <h3 class="font-bold mb-2 text-blue-600">Scalable</h3>
+                        <p class="text-slate-600">Strong foundation, ready to expand to new locations.</p>
+                    </div>
+                    <div class="card fade-up stagger-4">
+                        <h3 class="font-bold mb-2 text-blue-600">Practical</h3>
+                        <p class="text-slate-600">Designed for real-world usability and impact.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 12: Q&A -->
+        <section class="slide" data-title="Q&A">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-6xl font-bold mb-8 gradient-text fade-up">Q&A</h2>
+                <p class="text-2xl text-slate-600 fade-up stagger-1">Let’s talk.</p>
+                <div class="mt-12 flex justify-center gap-4 fade-up stagger-2">
+                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+                        <i data-feather="mail"></i>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+                        <i data-feather="twitter"></i>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+                        <i data-feather="linkedin"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        let idx = 0;
+        const progress = document.getElementById('deck-progress');
+
+        function update() {
+            slides.forEach((s, i) => {
+                if (i === idx) {
+                    s.classList.add('active');
+                    // Re-trigger animations
+                    const animated = s.querySelectorAll('.fade-up');
+                    animated.forEach(el => {
+                        el.style.animation = 'none';
+                        el.offsetHeight; /* trigger reflow */
+                        el.style.animation = null;
+                    });
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+
+            const pct = ((idx + 1) / slides.length) * 100;
+            progress.style.width = pct + '%';
+            history.replaceState(null, '', '#slide-' + (idx + 1));
+        }
+
+        function next() {
+            if (idx < slides.length - 1) {
+                idx++;
+                update();
+            }
+        }
+
+        function prev() {
+            if (idx > 0) {
+                idx--;
+                update();
+            }
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', next);
+        document.getElementById('prevBtn').addEventListener('click', prev);
+
+        document.addEventListener('keydown', e => {
+            if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { next(); }
+            if (['ArrowLeft', 'PageUp'].includes(e.key)) { prev(); }
+        });
+
+        // Deep link support
+        const hash = location.hash.match(/slide-(\d+)/);
+        if (hash) {
+            const n = parseInt(hash[1], 10) - 1;
+            if (n >= 0 && n < slides.length) { idx = n; }
+        }
+
+        update();
+    </script>
+</body>
+
+</html>
