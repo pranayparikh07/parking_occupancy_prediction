@@ -3,7 +3,7 @@ import pandas as pd
 import joblib
 
 # Load trained model
-pipeline, slot_names = joblib.load("parking_prob_model.pkl")
+pipeline, slot_names = joblib.load("models/parking_prob_model.pkl")
 
 app = Flask(__name__)
 
@@ -12,10 +12,21 @@ def index():
     # Landing page no longer renders predictions
     return render_template("index.html")
 
+def format_slot_name(name):
+    """Convert slot names like 'IR45' to 'Slot 45'"""
+    import re
+    match = re.match(r'^IR(\d+)$', str(name), re.IGNORECASE)
+    if match:
+        return f"Slot {match.group(1)}"
+    # If it's just a number
+    if str(name).isdigit():
+        return f"Slot {name}"
+    return str(name)
+
 def compute_predictions(hour: float, day: int, top_n: int = 10):
     X_new = pd.DataFrame([[hour, day]], columns=["hour", "dayofweek"])
     proba = pipeline.predict(X_new)[0]
-    slot_free_prob = {name: p * 100 for name, p in zip(slot_names, proba)}
+    slot_free_prob = {format_slot_name(name): p * 100 for name, p in zip(slot_names, proba)}
     sorted_slots = dict(sorted(slot_free_prob.items(), key=lambda x: x[1], reverse=True))
     expected_free = float(sum(proba))
     predictions = list(sorted_slots.items())[:top_n]

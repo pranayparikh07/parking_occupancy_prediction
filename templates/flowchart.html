@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Engineering Flow | ParkSpot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                fontFamily: 'Inter',
+                primaryColor: '#0ea5e9',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#0284c7',
+                lineColor: '#94a3b8',
+                secondaryColor: '#0f172a',
+                tertiaryColor: '#1e293b'
+            }
+        });
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: { 850: '#151f32', 900: '#0f172a', 950: '#020617' },
+                        tech: { accent: '#0ea5e9' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+    </style>
+</head>
+
+<body class="p-8 min-h-screen flex flex-col items-center">
+
+    <div class="max-w-6xl w-full space-y-8">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">Feature Engineering Pipeline</h1>
+                <p class="text-slate-400 font-mono text-sm">Source: train_model.py</p>
+            </div>
+            <div class="px-4 py-2 bg-slate-800 rounded text-xs font-mono text-tech-accent">
+                ParkSpot ML Core
+            </div>
+        </div>
+
+        <div class="glass-panel p-8 rounded-xl shadow-2xl overflow-hidden">
+            <div class="mermaid flex justify-center">
+                %%{init: {'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 50}}}%%
+                graph TD
+                subgraph Input
+                A[("SPSIRDATA.csv")]:::input
+                end
+
+                subgraph Preprocessing ["1. Preprocessing & Extraction"]
+                B["Load Data (Pandas)"]:::process
+                C["Convert 'created_at' to Datetime"]:::process
+                D["Extract Feature: Hour"]:::feature
+                E["Extract Feature: Day of Week"]:::feature
+
+                A --> B
+                B --> C
+                C --> D
+                C --> E
+                end
+
+                subgraph Transformation ["2. Aggregation & Reshaping"]
+                F["Group By (Hour, Day, SlotID)"]:::process
+                G["Calculate Mean Availability"]:::math
+                H["Pivot Table (Wide Format)"]:::process
+                I["Impute Missing Values (0)"]:::process
+
+                D & E --> F
+                F --> G
+                G --> H
+                H --> I
+                end
+
+                subgraph Training ["3. Model Training"]
+                J["Split Features (X) & Targets (y)"]:::process
+                K["Train/Test Split (80/20)"]:::process
+                L["Standard Scaler"]:::math
+                M["MultiOutput Random Forest"]:::model
+
+                I --> J
+                J -->|X: Hour, Day| K
+                J -->|y: Slot Probabilities| K
+                K --> L
+                L --> M
+                end
+
+                subgraph Output
+                N[("parking_prob_model.pkl")]:::output
+                end
+
+                M --> N
+
+                classDef input fill:#1e293b,stroke:#94a3b8,stroke-width:2px,color:#fff;
+                classDef process fill:#0f172a,stroke:#334155,stroke-width:1px,color:#cbd5e1;
+                classDef feature fill:#0c4a6e,stroke:#0ea5e9,stroke-width:2px,color:#fff;
+                classDef math fill:#312e81,stroke:#6366f1,stroke-width:1px,color:#e0e7ff;
+                classDef model fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#fff;
+                classDef output fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#fff;
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-4 rounded bg-slate-900/50 border border-slate-800">
+                <h3 class="text-tech-accent font-bold mb-2">Input Features</h3>
+                <ul class="list-disc list-inside text-sm text-slate-400 space-y-1">
+                    <li><span class="text-white font-mono">hour</span> (0-23)</li>
+                    <li><span class="text-white font-mono">dayofweek</span> (0-6)</li>
+                </ul>
+            </div>
+            <div class="p-4 rounded bg-slate-900/50 border border-slate-800">
+                <h3 class="text-tech-accent font-bold mb-2">Target Variable</h3>
+                <p class="text-sm text-slate-400">
+                    Multi-output probability vector for each parking slot (e.g., <span class="font-mono text-xs">Slot_A:
+                        0.85, Slot_B: 0.12</span>).
+                </p>
+            </div>
+            <div class="p-4 rounded bg-slate-900/50 border border-slate-800">
+                <h3 class="text-tech-accent font-bold mb-2">Model Architecture</h3>
+                <p class="text-sm text-slate-400">
+                    Random Forest Regressor wrapped in MultiOutputRegressor to predict independent probabilities for all
+                    slots simultaneously.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

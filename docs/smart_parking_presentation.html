@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart Parking System — Presentation</title>
+  <!-- Bootstrap (for components/utility) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Tailwind via CDN for quick utility classes (for prototyping; for production build, run Tailwind) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Mermaid for diagrams -->
+  <script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({ startOnLoad:true, theme: 'base' });</script>
+  <style>
+    :root{
+      --bg-1: #ffffff; /* minimal white background */
+      --accent-1: #3b82f6; /* blue */
+      --accent-2: #10b981; /* green */
+      --muted: #6b7280; /* gray */
+      --card-bg: #f9fafb;
+    }
+    html,body{height:100%;}
+    body{font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto, 'Helvetica Neue',Arial; background:var(--bg-1); color:#111827;}
+    .present-wrap{max-width:1200px;margin:20px auto;padding:20px;}
+    .slide{display:none;min-height:70vh;padding:30px;border-radius:8px;background:#fff;border:1px solid #e5e7eb;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+    .slide.active{display:block;}
+    .kbd{background:#f3f4f6;border:1px solid #d1d5db;padding:.2rem .5rem;border-radius:4px;font-size:.85rem;color:var(--muted);} 
+    .brand-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .6rem;border-radius:6px;background:var(--accent-1);font-weight:600;color:white}
+    .toc a{color:var(--muted);text-decoration:none}
+    .toc a:hover{color:#111827}
+    .slide-footer{display:flex;justify-content:space-between;align-items:center;margin-top:20px;color:var(--muted);font-size:.9rem}
+    .rich-list li{margin:.35rem 0}
+    /* responsive tweaks */
+    @media (max-width:768px){
+      .present-wrap{padding:15px;margin:10px}
+      .slide{padding:20px}
+    }
+    /* minimal design: flat, clean */
+    .chip{background:#f3f4f6;padding:.35rem .55rem;border-radius:4px;border:1px solid #e5e7eb;color:#374151}
+    .cta{background:var(--accent-1);color:white;border:none;padding:.5rem 1rem;border-radius:4px;text-decoration:none;display:inline-block;}
+    .cta:hover{background:#2563eb;}
+  </style>
+</head>
+<body>
+  <div class="present-wrap">
+    <header class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="brand-badge">ParkSpot</div>
+        <div class="text-muted small">Smart Parking Presentation</div>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
+        <div class="kbd">← →</div>
+        <div class="text-muted small">Navigate with keys</div>
+      </div>
+    </header>
+
+    <!-- Slides -->
+    <section id="slide-1" class="slide active">
+      <div class="row gx-4">
+        <div class="col-md-7">
+          <h2 class="display-6">Smart Parking System — End-to-End</h2>
+          <p class="lead text-muted">Reduce congestion, save time and emissions by combining low-cost IoT sensors with predictive machine learning.</p>
+          <ul class="rich-list text-muted mt-3">
+            <li><strong>Problem:</strong> ~30% of traffic is from parking search.</li>
+            <li><strong>Solution:</strong> Real-time sensor status + ML forecasts for future availability.</li>
+            <li><strong>Outcome:</strong> Faster parking, better utilization, lower emissions.</li>
+          </ul>
+          <div class="slide-footer">
+            <div>Prepared: <strong>ParkSpot Team</strong></div>
+            <div class="text-end">Duration: <strong>~12 slides</strong></div>
+          </div>
+        </div>
+        <div class="col-md-5 d-flex align-items-center justify-content-center">
+          <img src="https://images.unsplash.com/photo-1563720227021-0a0c9b1b1a3a?auto=format&fit=crop&w=900&q=60" alt="parking" class="rounded-3 img-fluid shadow-sm" style="max-height:260px;object-fit:cover;" />
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-2" class="slide">
+      <h3 class="mb-3">System Architecture</h3>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card bg-transparent border-0 p-0 mb-3">
+            <div class="card-body p-0">
+              <pre class="text-muted small bg-transparent p-0 m-0">Hardware → Microcontroller → WiFi Module → Flask Server → CSV / DB → ML Model → Dashboard</pre>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div class="mermaid bg-transparent text-start">graph LR
+    IR[IR Sensor] -->|Signal| MEGA[Arduino Mega]
+    MEGA -->|Serial Data| ESP[ESP8266]
+    ESP -->|HTTP POST| SERVER[Flask Server]
+</div>
+          </div>
+        </div>
+        <div class="col-lg-6 d-flex align-items-center justify-content-center">
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=60" alt="Arduino hardware" class="img-fluid rounded shadow-sm" style="max-height:300px;" />
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-3" class="slide">
+      <h3>Data Pipeline & ML</h3>
+      <div class="row">
+        <div class="col-md-6">
+          <p class="text-muted">Data ingest, hourly aggregation, features: <code>hour</code> (0-23), <code>day_of_week</code> (0-6). Model: <strong>MultiOutput RandomForestRegressor</strong> to predict probability of each parking slot being free.</p>
+          <ul class="text-muted">
+            <li>Preprocess: timestamp → hour, dayofweek, pivot to slots</li>
+            <li>Train/Test: typical 80/20 split</li>
+            <li>Model: RandomForest in sklearn, wrapped with MultiOutputRegressor</li>
+          </ul>
+        </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+          <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=600&q=60" alt="Machine learning visualization" class="img-fluid rounded shadow-sm" style="max-height:250px;" />
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-4" class="slide">
+      <h3>Features & Metrics</h3>
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="mb-2">Features</h5>
+          <ul class="text-muted">
+            <li>Hour of day (continuous)</li>
+            <li>Day of week (categorical encoded 0-6)</li>
+            <li>Historical occupancy statistics (rolling mean)</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h5 class="mb-2">Evaluation</h5>
+          <ul class="text-muted">
+            <li>Use ROC-AUC per slot where applicable</li>
+            <li>Precision/Recall for binary availability predictions</li>
+            <li>Business metric: % reduction in search time (A/B test)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-5" class="slide">
+      <h3>Deployment & API</h3>
+      <p class="text-muted">Flask app exposing endpoints for sensor POSTs and a web UI for predictions. Minimal example endpoints:</p>
+      <pre class="text-muted small">POST /api/sensor  → logs CSV
+GET /predictions?hour=14.5&day=2 → returns slot probabilities</pre>
+      <p class="text-muted">Consider adding auth, rate limits, and batching at the API gateway for production.</p>
+    </section>
+
+    <section id="slide-6" class="slide">
+      <h3>UX & Dashboard</h3>
+      <div class="row">
+        <div class="col-md-6">
+          <p class="text-muted">Design the dashboard for quick scanability:</p>
+          <ul class="text-muted">
+            <li>Heatmap of occupancy by hour/day</li>
+            <li>Recommender: nearest available slot</li>
+            <li>Export CSV / JSON for reporting</li>
+          </ul>
+        </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=60" alt="Dashboard UI" class="img-fluid rounded shadow-sm" style="max-height:250px;" />
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-7" class="slide">
+      <h3>Hardware Implementation Tips</h3>
+      <div class="row">
+        <div class="col-md-6">
+          <ul class="text-muted">
+            <li>Place IR sensors angled to avoid false positives from pedestrians.</li>
+            <li>Use shielded cabling for long runs; debounce sensor readings.</li>
+            <li>Periodically calibrate sensors and monitor drift.</li>
+          </ul>
+        </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+          <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=60" alt="IR sensors" class="img-fluid rounded shadow-sm" style="max-height:250px;" />
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-8" class="slide">
+      <h3>Production Checklist</h3>
+      <ol class="text-muted">
+        <li>CI for model retraining and validation</li>
+        <li>Monitoring (latency, failed posts, model drift)</li>
+        <li>Backups for CSV → move to time-series DB (InfluxDB / TimescaleDB)</li>
+        <li>Secure endpoints and device authentication</li>
+      </ol>
+    </section>
+
+    <section id="slide-9" class="slide">
+      <h3>Business Case & ROI</h3>
+      <p class="text-muted">Estimate reduced congestion and driver time savings. Highlight payback from optimized parking operations and improved customer experience.</p>
+      <ul class="text-muted">
+        <li>Reduced search time → less fuel, better throughput</li>
+        <li>Data-driven pricing & allocation</li>
+      </ul>
+    </section>
+
+    <section id="slide-10" class="slide">
+      <h3>Next Steps</h3>
+      <ul class="text-muted">
+        <li>Run pilot on one lot (2-4 weeks)</li>
+        <li>Collect more data, retrain weekly</li>
+        <li>Integrate with parking payment / wayfinding</li>
+      </ul>
+      <div class="mt-3">
+        <a class="cta" id="downloadBtn">Download Presentation</a>
+      </div>
+    </section>
+
+    <!-- Navigation Controls -->
+    <nav class="d-flex justify-content-between align-items-center mt-4 border-top pt-3">
+      <div>
+        <button id="prevBtn" class="btn btn-outline-secondary btn-sm">◀ Prev</button>
+        <button id="nextBtn" class="btn btn-secondary btn-sm ms-2">Next ▶</button>
+      </div>
+      <div class="text-muted small">Slide <span id="currentSlide">1</span>/<span id="totalSlides">10</span></div>
+    </nav>
+
+  </div>
+
+  <script>
+    // Basic slide navigation
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const total = slides.length;
+    let idx = 0;
+    document.getElementById('totalSlides').textContent = total;
+    function show(i){
+      slides.forEach((s,ii)=> s.classList.toggle('active', ii===i));
+      document.getElementById('currentSlide').textContent = i+1;
+      // small announce for accessibility
+      document.title = `(${i+1}/${total}) Smart Parking — Presentation`;
+    }
+    document.getElementById('prevBtn').addEventListener('click', ()=>{ idx = Math.max(0, idx-1); show(idx); });
+    document.getElementById('nextBtn').addEventListener('click', ()=>{ idx = Math.min(total-1, idx+1); show(idx); });
+    // keyboard
+    document.addEventListener('keydown', e => {
+      if(e.key === 'ArrowRight') { idx = Math.min(total-1, idx+1); show(idx); }
+      if(e.key === 'ArrowLeft') { idx = Math.max(0, idx-1); show(idx); }
+      if(e.key === 'Home') { idx = 0; show(idx); }
+      if(e.key === 'End') { idx = total-1; show(idx); }
+    });
+    // Download HTML quick action (save current file contents)
+    document.getElementById('downloadBtn').addEventListener('click', ()=>{
+      const html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([html], {type:'text/html'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Smart_Parking_Presentation.html';
+      document.body.appendChild(a); a.click(); a.remove();
+    });
+    // Ensure first slide visible
+    show(0);
+  </script>
+
+</body>
+</html>

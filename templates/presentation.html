@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkSpot | IoT Commercial Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFam\ily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#151f32',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        industrial: {
+                            100: '#e2e8f0',
+                            500: '#64748b',
+                            900: '#0f172a',
+                        },
+                        tech: {
+                            accent: '#0ea5e9', // Sky 500
+                            success: '#10b981', // Emerald 500
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 4rem;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .grid-bg {
+            background-image: linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .hardware-card {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            box-shadow: 5px 5px 10px #0a0f1c, -5px -5px 10px #243146;
+        }
+
+        .led-indicator {
+            box-shadow: 0 0 10px #10b981;
+        }
+    </style>
+</head>
+
+<body class="antialiased font-sans grid-bg">
+
+    <!-- Navigation & Progress -->
+    <div class="fixed top-0 left-0 w-full h-1 bg-slate-800 z-50">
+        <div id="progress-bar" class="h-full bg-tech-accent transition-all duration-500" style="width: 0%"></div>
+    </div>
+
+    <div class="fixed bottom-8 right-8 z-50 flex gap-6 text-slate-500 font-mono text-xs tracking-widest">
+        <button onclick="prevSlide()" class="hover:text-white transition-colors">PREV</button>
+        <span id="slide-indicator">01 / 06</span>
+        <button onclick="nextSlide()" class="hover:text-white transition-colors">NEXT</button>
+    </div>
+
+    <!-- Slide 1: Title / Commercial Focus -->
+    <div class="slide active flex-col justify-center items-start" id="slide-1">
+        <div class="max-w-4xl">
+            <div class="text-tech-accent font-mono text-sm mb-6 tracking-[0.2em] uppercase">Enterprise IoT Solutions
+            </div>
+            <h1 class="text-7xl font-light tracking-tight text-white mb-6">
+                Park<span class="font-bold">Spot</span>
+            </h1>
+            <p class="text-2xl text-slate-400 font-light leading-relaxed max-w-2xl">
+                Precision parking infrastructure powered by industrial-grade IoT sensors and predictive machine
+                learning.
+            </p>
+            <div class="mt-12 flex gap-8">
+                <div class="flex flex-col border-l border-slate-700 pl-4">
+                    <span class="text-white font-bold text-xl">99.8%</span>
+                    <span class="text-slate-500 text-xs uppercase tracking-wider">Detection Accuracy</span>
+                </div>
+                <div class="flex flex-col border-l border-slate-700 pl-4">
+                    <span class="text-white font-bold text-xl">&lt;200ms</span>
+                    <span class="text-slate-500 text-xs uppercase tracking-wider">Sensor Latency</span>
+                </div>
+                <div class="flex flex-col border-l border-slate-700 pl-4">
+                    <span class="text-white font-bold text-xl">IP67</span>
+                    <span class="text-slate-500 text-xs uppercase tracking-wider">Hardware Rating</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Hardware Focus (The Request) -->
+    <div class="slide flex-row items-center justify-between gap-16" id="slide-2">
+        <div class="flex-1">
+            <h2 class="text-4xl font-bold text-white mb-8">Hardware Specification</h2>
+            <p class="text-slate-400 mb-12 leading-relaxed">
+                Our proprietary sensor node combines dual-technology detection with robust industrial design, ensuring
+                reliability in harsh environmental conditions.
+            </p>
+
+            <div class="space-y-6 font-mono text-sm text-slate-300">
+                <div class="flex justify-between border-b border-slate-800 pb-2">
+                    <span>MCU Core</span>
+                    <span class="text-tech-accent">ARM Cortex-M4 Ultra-Low Power</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-800 pb-2">
+                    <span>Detection</span>
+                    <span class="text-tech-accent">Ultrasonic (40kHz) + Magnetometer</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-800 pb-2">
+                    <span>Connectivity</span>
+                    <span class="text-tech-accent">LoRaWAN / NB-IoT / WiFi</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-800 pb-2">
+                    <span>Power</span>
+                    <span class="text-tech-accent">Li-SOCl2 8500mAh (5yr Life)</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-800 pb-2">
+                    <span>Enclosure</span>
+                    <span class="text-tech-accent">Polycarbonate IP67 Rated</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSS-only Hardware Visualization -->
+        <div class="flex-1 flex justify-center items-center">
+            <div class="relative w-80 h-80">
+                <!-- Sensor Body -->
+                <div
+                    class="absolute inset-0 bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col items-center justify-center hardware-card">
+                    <!-- Top Surface -->
+                    <div
+                        class="w-64 h-64 rounded-full border border-slate-700/50 flex items-center justify-center relative">
+                        <!-- Ultrasonic Emitter -->
+                        <div
+                            class="w-32 h-32 rounded-full border-4 border-slate-600 bg-slate-900 flex items-center justify-center relative">
+                            <div class="w-24 h-24 rounded-full bg-slate-800 grid place-items-center">
+                                <div class="w-2 h-2 bg-slate-900 rounded-full grid grid-cols-3 gap-1"></div>
+                            </div>
+                            <!-- Pulse Animation -->
+                            <div
+                                class="absolute w-full h-full rounded-full border border-tech-accent opacity-0 animate-ping">
+                            </div>
+                        </div>
+
+                        <!-- Status LED -->
+                        <div class="absolute top-8 right-12 w-3 h-3 bg-emerald-500 rounded-full led-indicator"></div>
+
+                        <!-- Branding -->
+                        <div class="absolute bottom-10 font-mono text-[10px] text-slate-500 tracking-widest">SN-2024-X9
+                        </div>
+                    </div>
+                </div>
+                <!-- Connection Lines -->
+                <div class="absolute -right-12 top-1/2 w-12 h-[1px] bg-slate-700"></div>
+                <div class="absolute -right-24 top-1/2 text-[10px] font-mono text-tech-accent">DATA_OUT</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Architecture -->
+    <div class="slide flex-col justify-center" id="slide-3">
+        <h2 class="text-4xl font-bold text-white mb-16 text-center">IoT Data Pipeline</h2>
+
+        <div class="flex items-center justify-center gap-4 w-full max-w-6xl mx-auto">
+            <!-- Node 1: Sensor -->
+            <div
+                class="flex-1 p-6 border border-slate-800 bg-slate-900/50 rounded-lg text-center relative group hover:border-tech-accent transition-colors">
+                <div class="text-2xl mb-4">📡</div>
+                <h3 class="text-white font-semibold mb-2">Edge Node</h3>
+                <p class="text-xs text-slate-500 font-mono">Raw Signal Acquisition</p>
+                <div class="absolute -right-4 top-1/2 w-8 h-[1px] bg-slate-700 z-0"></div>
+            </div>
+
+            <!-- Node 2: Gateway -->
+            <div
+                class="flex-1 p-6 border border-slate-800 bg-slate-900/50 rounded-lg text-center relative group hover:border-tech-accent transition-colors">
+                <div class="text-2xl mb-4">🔌</div>
+                <h3 class="text-white font-semibold mb-2">IoT Gateway</h3>
+                <p class="text-xs text-slate-500 font-mono">Protocol Conversion</p>
+                <div class="absolute -right-4 top-1/2 w-8 h-[1px] bg-slate-700 z-0"></div>
+            </div>
+
+            <!-- Node 3: Cloud -->
+            <div
+                class="flex-1 p-6 border border-slate-800 bg-slate-900/50 rounded-lg text-center relative group hover:border-tech-accent transition-colors">
+                <div class="text-2xl mb-4">☁️</div>
+                <h3 class="text-white font-semibold mb-2">Cloud Server</h3>
+                <p class="text-xs text-slate-500 font-mono">Flask / Python API</p>
+                <div class="absolute -right-4 top-1/2 w-8 h-[1px] bg-slate-700 z-0"></div>
+            </div>
+
+            <!-- Node 4: ML -->
+            <div class="flex-1 p-6 border border-tech-accent/30 bg-tech-accent/5 rounded-lg text-center relative">
+                <div class="text-2xl mb-4">🧠</div>
+                <h3 class="text-white font-semibold mb-2">ML Engine</h3>
+                <p class="text-xs text-slate-500 font-mono">Predictive Analytics</p>
+            </div>
+        </div>
+
+        <div class="mt-16 text-center max-w-2xl mx-auto">
+            <p class="text-slate-400 text-sm font-mono border-l-2 border-tech-accent pl-4 text-left">
+                "Data is transmitted via secure MQTT protocol to our central server where a pre-trained Scikit-learn
+                model analyzes temporal patterns to predict future slot availability."
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 4: ML Model -->
+    <div class="slide flex-row items-center gap-16" id="slide-4">
+        <div class="flex-1">
+            <div
+                class="w-full h-80 bg-slate-900 border border-slate-800 rounded-lg p-6 font-mono text-xs text-slate-400 overflow-hidden relative">
+                <div class="absolute top-0 left-0 w-full h-8 bg-slate-800 flex items-center px-4 text-slate-500">
+                    model_inference.py</div>
+                <div class="mt-8 space-y-2">
+                    <p><span class="text-purple-400">import</span> joblib</p>
+                    <p><span class="text-purple-400">import</span> pandas <span class="text-purple-400">as</span> pd</p>
+                    <br>
+                    <p><span class="text-slate-500"># Load trained pipeline</span></p>
+                    <p>model = joblib.load(<span class="text-green-400">"parking_prob_model.pkl"</span>)</p>
+                    <br>
+                    <p><span class="text-purple-400">def</span> <span
+                            class="text-blue-400">predict_occupancy</span>(hour, day):</p>
+                    <p class="pl-4">features = pd.DataFrame([[hour, day]])</p>
+                    <p class="pl-4">probability = model.predict_proba(features)</p>
+                    <p class="pl-4"><span class="text-purple-400">return</span> probability</p>
+                </div>
+                <!-- Overlay Gradient -->
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+            </div>
+        </div>
+        <div class="flex-1">
+            <h2 class="text-4xl font-bold text-white mb-6">Predictive Intelligence</h2>
+            <ul class="space-y-6">
+                <li class="flex items-start gap-4">
+                    <div class="w-1 h-1 mt-2 bg-tech-accent rounded-full"></div>
+                    <div>
+                        <h4 class="text-white font-semibold">Temporal Analysis</h4>
+                        <p class="text-sm text-slate-400">Model analyzes historical occupancy rates based on time-of-day
+                            and day-of-week.</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-4">
+                    <div class="w-1 h-1 mt-2 bg-tech-accent rounded-full"></div>
+                    <div>
+                        <h4 class="text-white font-semibold">Probabilistic Output</h4>
+                        <p class="text-sm text-slate-400">Instead of binary (Full/Empty), we provide probability scores
+                            (e.g., "85% chance of finding a spot").</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-4">
+                    <div class="w-1 h-1 mt-2 bg-tech-accent rounded-full"></div>
+                    <div>
+                        <h4 class="text-white font-semibold">Continuous Learning</h4>
+                        <p class="text-sm text-slate-400">System retrains periodically on new sensor data to adapt to
+                            changing traffic patterns.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 5: Commercial Value -->
+    <div class="slide flex-col justify-center items-center text-center" id="slide-5">
+        <h2 class="text-4xl font-bold text-white mb-16">Commercial Application</h2>
+
+        <div class="grid grid-cols-3 gap-8 max-w-6xl w-full">
+            <div class="bg-slate-900/50 p-8 border border-slate-800 hover:border-slate-600 transition-all">
+                <div class="text-4xl font-light text-white mb-4">30%</div>
+                <div class="text-sm text-slate-400 uppercase tracking-wider mb-4">Revenue Increase</div>
+                <p class="text-xs text-slate-500">Dynamic pricing enabled by real-time demand data.</p>
+            </div>
+            <div class="bg-slate-900/50 p-8 border border-slate-800 hover:border-slate-600 transition-all">
+                <div class="text-4xl font-light text-white mb-4">-15m</div>
+                <div class="text-sm text-slate-400 uppercase tracking-wider mb-4">Search Time</div>
+                <p class="text-xs text-slate-500">Average time saved per driver using the guidance app.</p>
+            </div>
+            <div class="bg-slate-900/50 p-8 border border-slate-800 hover:border-slate-600 transition-all">
+                <div class="text-4xl font-light text-white mb-4">ROI</div>
+                <div class="text-sm text-slate-400 uppercase tracking-wider mb-4">12 Months</div>
+                <p class="text-xs text-slate-500">Rapid return on investment through operational efficiency.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: End -->
+    <div class="slide flex-col justify-center items-center" id="slide-6">
+        <div class="text-center">
+            <div
+                class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-8 border border-slate-700">
+                <svg class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h2 class="text-4xl font-bold text-white mb-4">Ready for Deployment</h2>
+            <p class="text-slate-400 mb-12">Scalable. Reliable. Intelligent.</p>
+
+            <a href="index.html"
+                class="px-8 py-3 bg-white text-slate-900 font-semibold text-sm tracking-wide hover:bg-slate-200 transition-colors">
+                LAUNCH DEMO
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 6;
+        const progressBar = document.getElementById('progress-bar');
+        const indicator = document.getElementById('slide-indicator');
+
+        function updateUI() {
+            // Update slides
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
+
+            // Update progress
+            const progress = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Update indicator
+            indicator.textContent = `0${currentSlide} / 0${totalSlides}`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+    </script>
+</body>
+
+</html>

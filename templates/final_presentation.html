@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Parking Project Presentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            fontFamily: 'Inter',
+            securityLevel: 'loose',
+        });
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: { 850: '#151f32', 900: '#0f172a', 950: '#020617' },
+                        brand: {
+                            primary: '#3b82f6', // Blue
+                            secondary: '#10b981', // Emerald
+                            accent: '#f59e0b', // Amber
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            padding: 4rem;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 1rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-brand-primary/30">
+
+    <!-- Controls -->
+    <div class="fixed bottom-8 right-8 z-50 flex gap-4">
+        <button onclick="changeSlide(-1)"
+            class="p-3 rounded-full bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition-all">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <button onclick="changeSlide(1)"
+            class="p-3 rounded-full bg-brand-primary hover:bg-blue-600 text-white shadow-lg shadow-blue-500/30 transition-all">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+    </div>
+
+    <div class="fixed bottom-8 left-8 z-50 font-mono text-slate-500 text-sm">
+        <span id="slide-number">1</span> / <span id="total-slides">7</span>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide active" id="slide-1">
+        <div class="text-center space-y-6 max-w-4xl">
+            <div
+                class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-mono text-sm mb-4">
+                FINAL YEAR PROJECT
+            </div>
+            <h1 class="text-7xl font-bold tracking-tight text-white mb-4">
+                Smart Parking System
+            </h1>
+            <h2 class="text-4xl font-light text-slate-400">
+                using <span class="gradient-text font-semibold">IoT & Machine Learning</span>
+            </h2>
+            <div class="mt-12 pt-12 border-t border-slate-800 flex justify-center gap-12 text-left">
+                <div>
+                    <div class="text-xs text-slate-500 font-mono uppercase tracking-wider mb-1">Developed By</div>
+                    <div class="text-white font-semibold">Your Name / Team</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-mono uppercase tracking-wider mb-1">Tech Stack</div>
+                    <div class="text-white font-semibold">Arduino • Python • Flask • ML</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Problem Statement -->
+    <div class="slide" id="slide-2">
+        <h2 class="text-5xl font-bold text-white mb-16">Why This Project?</h2>
+        <div class="grid grid-cols-3 gap-8 max-w-6xl w-full">
+            <div class="glass-card p-8 hover:bg-slate-800/50 transition-colors">
+                <div class="text-4xl mb-4">🚗</div>
+                <h3 class="text-xl font-bold text-white mb-3">Traffic Congestion</h3>
+                <p class="text-slate-400 leading-relaxed">30% of urban traffic is caused by drivers endlessly circling
+                    to find a parking spot.</p>
+            </div>
+            <div class="glass-card p-8 hover:bg-slate-800/50 transition-colors">
+                <div class="text-4xl mb-4">⛽</div>
+                <h3 class="text-xl font-bold text-white mb-3">Fuel Wastage</h3>
+                <p class="text-slate-400 leading-relaxed">Excessive idling and searching leads to significant fuel
+                    consumption and carbon emissions.</p>
+            </div>
+            <div class="glass-card p-8 hover:bg-slate-800/50 transition-colors">
+                <div class="text-4xl mb-4">⏱️</div>
+                <h3 class="text-xl font-bold text-white mb-3">Time Loss</h3>
+                <p class="text-slate-400 leading-relaxed">The average driver spends 17 hours a year searching for
+                    parking in major cities.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Hardware Workflow -->
+    <div class="slide" id="slide-3">
+        <h2 class="text-4xl font-bold text-white mb-8">Hardware Implementation</h2>
+        <div class="w-full max-w-5xl glass-card p-8 bg-slate-900/80">
+            <div class="mermaid flex justify-center">
+                graph LR
+                subgraph Sensors
+                IR[("IR Sensor")]:::hw
+                end
+                subgraph Microcontrollers
+                MEGA["Arduino Mega"]:::hw
+                ESP["ESP8266 WiFi"]:::hw
+                end
+                subgraph Cloud
+                SERVER["Flask Server"]:::sw
+                end
+
+                IR -->|Signal| MEGA
+                MEGA -->|Serial| ESP
+                ESP -->|HTTP POST| SERVER
+
+                classDef hw fill:#1e3a8a,stroke:#3b82f6,stroke-width:2px,color:#fff;
+                classDef sw fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#fff;
+            </div>
+        </div>
+        <div class="grid grid-cols-3 gap-6 mt-8 max-w-5xl w-full text-sm">
+            <div class="p-4 border border-slate-800 rounded">
+                <strong class="text-blue-400">1. Detection</strong>: IR sensors identify vehicle presence at specific
+                slots.
+            </div>
+            <div class="p-4 border border-slate-800 rounded">
+                <strong class="text-blue-400">2. Processing</strong>: Arduino aggregates sensor data; ESP8266 handles
+                connectivity.
+            </div>
+            <div class="p-4 border border-slate-800 rounded">
+                <strong class="text-green-400">3. Upload</strong>: Data is sent wirelessly to the Python backend.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: ML Pipeline -->
+    <div class="slide" id="slide-4">
+        <h2 class="text-4xl font-bold text-white mb-8">Machine Learning Pipeline</h2>
+        <div class="w-full max-w-5xl glass-card p-8 bg-slate-900/80">
+            <div class="mermaid flex justify-center">
+                graph TD
+                CSV[("Dataset (CSV)")]:::data
+                PRE["Preprocessing"]:::proc
+                SPLIT["Train/Test Split"]:::proc
+                MODEL["Random Forest"]:::ml
+                OUT["Probability Score"]:::out
+
+                CSV --> PRE
+                PRE -->|Extract Hour/Day| SPLIT
+                SPLIT --> MODEL
+                MODEL --> OUT
+
+                classDef data fill:#374151,stroke:#9ca3af,color:#fff;
+                classDef proc fill:#1e3a8a,stroke:#60a5fa,color:#fff;
+                classDef ml fill:#581c87,stroke:#a855f7,color:#fff;
+                classDef out fill:#064e3b,stroke:#34d399,color:#fff;
+            </div>
+        </div>
+        <ul class="mt-8 space-y-2 text-slate-400 list-disc list-inside">
+            <li>Model trained on historical occupancy data.</li>
+            <li>Predicts availability based on <strong>Time of Day</strong> and <strong>Day of Week</strong>.</li>
+            <li>Uses <strong>Random Forest Regressor</strong> for high accuracy.</li>
+        </ul>
+    </div>
+
+    <!-- Slide 5: Tech Stack -->
+    <div class="slide" id="slide-5">
+        <h2 class="text-4xl font-bold text-white mb-16">Technology Stack</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl w-full">
+            <div class="glass-card p-6 flex flex-col items-center gap-4">
+                <div class="text-5xl">♾️</div>
+                <div class="text-xl font-bold text-white">Arduino C++</div>
+                <div class="text-xs text-slate-500">Embedded Logic</div>
+            </div>
+            <div class="glass-card p-6 flex flex-col items-center gap-4">
+                <div class="text-5xl">🐍</div>
+                <div class="text-xl font-bold text-white">Python</div>
+                <div class="text-xs text-slate-500">Backend & ML</div>
+            </div>
+            <div class="glass-card p-6 flex flex-col items-center gap-4">
+                <div class="text-5xl">🌶️</div>
+                <div class="text-xl font-bold text-white">Flask</div>
+                <div class="text-xs text-slate-500">Web Framework</div>
+            </div>
+            <div class="glass-card p-6 flex flex-col items-center gap-4">
+                <div class="text-5xl">🎨</div>
+                <div class="text-xl font-bold text-white">Tailwind</div>
+                <div class="text-xs text-slate-500">Frontend Design</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Features -->
+    <div class="slide" id="slide-6">
+        <h2 class="text-4xl font-bold text-white mb-12">Key Features</h2>
+        <div class="space-y-6 max-w-4xl w-full">
+            <div class="flex items-center gap-6 p-6 glass-card">
+                <div
+                    class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 font-bold">
+                    1</div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Real-time Monitoring</h3>
+                    <p class="text-slate-400">Live status updates from hardware sensors displayed instantly on the
+                        dashboard.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6 p-6 glass-card">
+                <div
+                    class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">
+                    2</div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Predictive Analytics</h3>
+                    <p class="text-slate-400">Machine learning model forecasts future parking availability to help plan
+                        trips.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6 p-6 glass-card">
+                <div
+                    class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold">
+                    3</div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Data Logging</h3>
+                    <p class="text-slate-400">Continuous logging of occupancy events to CSV for future training and
+                        analysis.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Conclusion -->
+    <div class="slide" id="slide-7">
+        <div class="text-center space-y-8">
+            <h2 class="text-6xl font-bold text-white">Thank You</h2>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">
+                Questions?
+            </p>
+            <div class="pt-12 flex gap-4 justify-center">
+                <a href="index.html" target="_blank"
+                    class="px-8 py-3 bg-brand-primary hover:bg-blue-600 text-white rounded-full font-semibold transition-all">
+                    Open Live Demo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 7;
+
+        function changeSlide(direction) {
+            const next = currentSlide + direction;
+            if (next >= 1 && next <= totalSlides) {
+                // Hide current
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+                // Show next
+                document.getElementById(`slide-${next}`).classList.add('active');
+
+                currentSlide = next;
+                document.getElementById('slide-number').textContent = currentSlide;
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ParkIQ | Enterprise IoT Parking Intelligence</title>
+  <title>ParkSpot | EnSpotrprise IoT Parking Intelligence</title>
   <meta name="description"
     content="Advanced IoT sensor networks and ML-driven predictive analytics for commercial parking infrastructure." />
 
@@ -126,13 +127,11 @@
                 d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
             </svg>
           </div>
-          <span class="text-lg font-bold tracking-tight text-white">Park<span class="text-primary-400">IQ</span> <span
+          <span class="text-lg font-bold tracking-tight text-white">Park<span class="text-primary-400">Spot</span> <span
               class="text-xs font-mono text-slate-500 ml-1">v2.4.0</span></span>
         </div>
-        <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-          <a href="#platform" class="hover:text-primary-400 transition-colors">Platform</a>
-          <a href="#technology" class="hover:text-primary-400 transition-colors">Technology</a>
-          <a href="#integration" class="hover:text-primary-400 transition-colors">Integration</a>
+        <div clasSpot"hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+         
           <a href="#demo"
             class="px-4 py-2 rounded-full bg-slate-800 text-white hover:bg-slate-700 border border-slate-700 transition-all hover:border-primary-500/50">Live
             Demo</a>
@@ -177,25 +176,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </a>
-            <a href="#technology"
-              class="inline-flex items-center justify-center px-6 py-3 rounded-lg border border-slate-700 text-slate-300 font-medium hover:bg-slate-800 hover:text-white transition-all">
-              View Architecture
-            </a>
+            
           </div>
 
           <div class="grid grid-cols-3 gap-8 pt-8 border-t border-slate-800/50">
-            <div>
-              <div class="text-2xl font-bold text-white font-mono">50k+</div>
-              <div class="text-xs text-slate-500 uppercase tracking-wider mt-1">Active Sensors</div>
-            </div>
-            <div>
-              <div class="text-2xl font-bold text-white font-mono">12ms</div>
-              <div class="text-xs text-slate-500 uppercase tracking-wider mt-1">Latency</div>
-            </div>
-            <div>
-              <div class="text-2xl font-bold text-white font-mono">99.9%</div>
-              <div class="text-xs text-slate-500 uppercase tracking-wider mt-1">Uptime</div>
-            </div>
+           
+           
           </div>
         </div>
 
@@ -204,7 +190,7 @@
           </div>
           <div class="relative rounded-2xl overflow-hidden border border-slate-700 bg-slate-900 shadow-2xl">
             <!-- Abstract Tech Visualization Image -->
-            <img src="../static/photo.jpg" alt="Server Data Center"
+            <img src="../static/images/photo.jpg" alt="Server Data Center"
               class="w-full h-full object-cover opacity-60 mix-blend-overlay" />
 
             <!-- Overlay UI -->
@@ -234,67 +220,9 @@
     </section>
 
     <!-- Tech Stack / Architecture -->
-    <section id="technology" class="py-20 bg-slate-900/50 border-y border-slate-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-          <h2 class="text-3xl font-bold text-white mb-4">System Architecture</h2>
-          <p class="text-slate-400 max-w-2xl mx-auto">End-to-end data pipeline from edge devices to cloud inference.</p>
-        </div>
 
-        <div class="grid md:grid-cols-3 gap-8 relative">
-          <!-- Connecting Line (Desktop) -->
-          <div
-            class="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-slate-800 via-primary-900 to-slate-800 z-0">
-          </div>
 
-          <!-- Card 1 -->
-          <div class="relative z-10 glass-panel p-8 rounded-xl hover:border-primary-500/30 transition-colors group">
-            <div
-              class="h-12 w-12 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center mb-6 group-hover:bg-primary-500/10 group-hover:text-primary-400 transition-all text-slate-400">
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold text-white mb-3">IoT Edge Layer</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">
-              High-density sensor arrays utilizing ultrasonic and magnetic detection. Edge processing filters noise
-              before transmission.
-            </p>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="relative z-10 glass-panel p-8 rounded-xl hover:border-primary-500/30 transition-colors group">
-            <div
-              class="h-12 w-12 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center mb-6 group-hover:bg-primary-500/10 group-hover:text-primary-400 transition-all text-slate-400">
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold text-white mb-3">Data Ingestion</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">
-              Scalable message queues handle high-throughput telemetry. Data is normalized and stored in time-series
-              databases.
-            </p>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="relative z-10 glass-panel p-8 rounded-xl hover:border-primary-500/30 transition-colors group">
-            <div
-              class="h-12 w-12 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center mb-6 group-hover:bg-primary-500/10 group-hover:text-primary-400 transition-all text-slate-400">
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold text-white mb-3">Inference Engine</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">
-              Proprietary ML models analyze historical patterns and real-time inputs to forecast availability with
-              confidence intervals.
-            </p>
-          </div>
-        </div>
+                </div>
       </div>
     </section>
 
@@ -319,17 +247,16 @@
                   </div>
 
                   <div id="time-section" class="space-y-2">
-                    <label for="time" class="block text-xs font-mono text-primary-400 uppercase tracking-wider">Target
+                    <label class="block text-xs font-mono text-primary-400 uppercase tracking-wider">Target
                       Time (UTC+0)</label>
-                    <input id="time" name="time_native" type="time" step="900"
-                      class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all" />
-
-                    <!-- Fallback for legacy browsers -->
-                    <div id="fallback-time" class="hidden grid grid-cols-2 gap-4 mt-2">
-                      <select id="fallback-hour"
-                        class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white text-sm"></select>
-                      <select id="fallback-minute"
-                        class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white text-sm">
+                    <div class="grid grid-cols-2 gap-3">
+                      <select id="hour-select"
+                        class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all">
+                        <option value="">Hour</option>
+                      </select>
+                      <select id="minute-select"
+                        class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all">
+                        <option value="">Min</option>
                         <option value="0">00</option>
                         <option value="15">15</option>
                         <option value="30">30</option>
@@ -397,52 +324,32 @@
       <div class="flex flex-col md:flex-row justify-between items-center gap-6">
         <div class="flex items-center gap-2">
           <div class="h-6 w-6 rounded bg-slate-800 flex items-center justify-center text-xs text-slate-400">P</div>
-          <span class="text-slate-300 font-semibold">ParkIQ Enterprise</span>
+          <span class="text-slate-300 font-semibold">ParkSpot</span>
         </div>
         <div class="text-slate-500 text-sm">
-          &copy; 2025 ParkIQ Inc. All systems operational.
+          &copy; 2025 ParkSpot Inc. All systems operational.
         </div>
         <div class="flex gap-6 text-sm text-slate-500">
-          <a href="#" class="hover:text-primary-400 transition-colors">API Docs</a>
-          <a href="#" class="hover:text-primary-400 transition-colors">Status</a>
-          <a href="#" class="hover:text-primary-400 transition-colors">Privacy</a>
+          
         </div>
       </div>
     </div>
-  </footer>
-
-  <script>
+  </footer> <script>
     // Logic adapted from original file
-    const timeInput = document.getElementById('time');
-    const fallbackWrapper = document.getElementById('fallback-time');
-    const fallbackHour = document.getElementById('fallback-hour');
-    const fallbackMinute = document.getElementById('fallback-minute');
+    const hourSelect = document.getElementById('hour-select');
+    const minuteSelect = document.getElementById('minute-select');
     const form = document.getElementById('predict-form');
     const dateInput = document.getElementById('date');
     const errorMsg = document.getElementById('error-msg');
     const submitBtn = document.getElementById('submit-btn');
     const btnLabel = document.getElementById('btn-label');
 
-    function supportsTimeInput() {
-      const input = document.createElement('input');
-      input.setAttribute('type', 'time');
-      input.value = '13:00';
-      return input.type === 'time' && input.value === '13:00';
-    }
-
-    function populateHourOptions() {
-      for (let h = 0; h < 24; h++) {
-        const opt = document.createElement('option');
-        opt.value = String(h);
-        opt.textContent = String(h).padStart(2, '0') + ':00';
-        fallbackHour.appendChild(opt);
-      }
-    }
-
-    if (!supportsTimeInput()) {
-      fallbackWrapper.classList.remove('hidden');
-      timeInput.style.display = 'none';
-      populateHourOptions();
+    // Populate hour dropdown (0-23)
+    for (let h = 0; h < 24; h++) {
+      const opt = document.createElement('option');
+      opt.value = h;
+      opt.textContent = String(h).padStart(2, '0');
+      hourSelect.appendChild(opt);
     }
 
     function setError(text) {
@@ -456,21 +363,11 @@
     }
 
     function parseTimeFromInputs() {
-      if (!supportsTimeInput()) {
-        const h = fallbackHour.value;
-        const m = fallbackMinute.value;
-        if (!h || m === '') return null;
-        return { hour: parseInt(h, 10), minute: parseInt(m, 10) };
-      } else {
-        if (!timeInput.value) return null;
-        const parts = timeInput.value.split(':');
-        if (parts.length < 2) return null;
-        let hour = parseInt(parts[0], 10);
-        let minute = parseInt(parts[1], 10);
-        const roundedQ = Math.round(minute / 15) * 15;
-        if (roundedQ === 60) { hour = (hour + 1) % 24; minute = 0; } else minute = roundedQ;
-        return { hour, minute };
-      }
+      if (hourSelect.value === '' || minuteSelect.value === '') return null;
+      return {
+        hour: parseInt(hourSelect.value, 10),
+        minute: parseInt(minuteSelect.value, 10)
+      };
     }
 
     form.addEventListener('submit', (e) => {

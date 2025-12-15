@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ParkIQ – Inference Results</title>
+  <title>ParkSpot – Inference Results</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
@@ -141,7 +141,7 @@
           class="h-8 w-8 rounded bg-gradient-to-tr from-primary-600 to-accent-600 flex items-center justify-center text-white font-bold text-sm">
           P</div>
         <div>
-          <div class="font-bold text-lg tracking-tight text-white">Park<span class="text-primary-400">IQ</span></div>
+          <div class="font-bold text-lg tracking-tight text-white">Park<span class="text-primary-400">Spot</span></div>
           <div class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Inference Engine</div>
         </div>
       </div>
@@ -199,8 +199,19 @@
       </div>
     </div>
 
+    <!-- Top 3 Recommendations -->
+    <div id="top3" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+        Top 3 Recommended Slots
+      </h2>
+      <div id="top3-cards" class="grid sm:grid-cols-3 gap-4"></div>
+    </div>
+
     <!-- Results Container -->
-    <div id="results" class="hidden space-y-8"></div>
+    <div id="results" class="hidden space-y-3">
+      <h2 class="text-sm font-mono text-slate-500 uppercase tracking-wider mb-4">All Predictions (Top 10)</h2>
+    </div>
 
     <!-- Error Message -->
     <div id="error"
@@ -303,15 +314,53 @@
 
     function renderResults(data) {
       const container = document.getElementById('results');
+      const top3Container = document.getElementById('top3');
+      const top3Cards = document.getElementById('top3-cards');
       const badge = document.getElementById('summary-badge');
       const badgeText = document.getElementById('badge-text');
 
-      badgeText.textContent = `${data.predictions.length} DATA POINTS ANALYZED`;
+      badgeText.textContent = `${data.predictions.length} SLOTS ANALYZED`;
       badge.classList.remove('hidden');
       badge.classList.add('flex');
 
+      // Extract slot number from name like "Slot 45"
+      function getSlotNumber(slotName) {
+        const match = slotName.match(/\d+/);
+        return match ? match[0] : slotName;
+      }
+
+      // Render Top 3 Cards
+      const top3 = data.predictions.slice(0, 3);
+      const top3Html = top3.map((item, i) => {
+        const prob = item.prob;
+        const slotNum = getSlotNumber(item.slot);
+        const colors = [
+          { bg: 'from-amber-500 to-yellow-500', border: 'border-amber-400', text: 'text-amber-400', label: '🥇 Best Choice' },
+          { bg: 'from-slate-400 to-slate-500', border: 'border-slate-400', text: 'text-slate-300', label: '🥈 2nd Best' },
+          { bg: 'from-amber-700 to-amber-800', border: 'border-amber-700', text: 'text-amber-600', label: '🥉 3rd Best' }
+        ][i];
+        
+        return `<div class="glass-panel rounded-xl p-5 border ${colors.border} relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${colors.bg} opacity-10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+          <div class="text-xs font-mono ${colors.text} mb-2">${colors.label}</div>
+          <div class="text-3xl font-bold text-white mb-1">${item.slot}</div>
+          <div class="flex items-center gap-2">
+            <div class="text-2xl font-mono ${prob >= 70 ? 'text-green-400' : (prob >= 40 ? 'text-amber-400' : 'text-red-400')}">${prob.toFixed(1)}%</div>
+            <div class="text-xs text-slate-500">availability</div>
+          </div>
+          <div class="mt-3 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+            <div class="h-full rounded-full ${prob >= 70 ? 'bg-green-500' : (prob >= 40 ? 'bg-amber-500' : 'bg-red-500')}" style="width: ${prob.toFixed(1)}%"></div>
+          </div>
+        </div>`;
+      }).join('');
+      
+      top3Cards.innerHTML = top3Html;
+      top3Container.classList.remove('hidden');
+
+      // Render all rows
       const rowsHtml = data.predictions.map((item, i) => {
         const prob = item.prob;
+        const slotNum = getSlotNumber(item.slot);
         // Status logic
         let statusLabel, statusColor, barColor, icon;
 
@@ -335,7 +384,7 @@
         return `<div class='glass-panel rounded-lg p-4 flex items-center justify-between hover:bg-slate-800/50 transition revealed' style='animation-delay:${i * 50}ms'>
           <div class="flex items-center gap-4 w-1/4">
             <div class="h-8 w-8 rounded bg-slate-800 flex items-center justify-center font-mono text-xs text-slate-400 border border-slate-700">
-              ${item.slot.replace('Slot', '')}
+              ${slotNum}
             </div>
             <div class="font-medium text-slate-200">${item.slot}</div>
           </div>
@@ -346,7 +395,7 @@
               <span class="${prob >= 70 ? 'text-green-400' : (prob >= 40 ? 'text-amber-400' : 'text-red-400')} font-mono">${prob.toFixed(1)}%</span>
             </div>
             <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-              <div class="h-full rounded-full ${barColor} transition-all duration-1000 ease-out" style="width: 0%" onload="this.style.width='${prob.toFixed(1)}%'"></div>
+              <div class="h-full rounded-full ${barColor} transition-all duration-1000 ease-out" style="width: 0%" data-width="${prob.toFixed(1)}%"></div>
             </div>
           </div>
 
@@ -358,13 +407,13 @@
         </div>`;
       }).join('');
 
-      container.innerHTML = rowsHtml;
+      container.innerHTML = '<h2 class="text-sm font-mono text-slate-500 uppercase tracking-wider mb-4">All Predictions (Top 10)</h2>' + rowsHtml;
 
       // Animate bars after render
       setTimeout(() => {
-        const bars = container.querySelectorAll('[onload]');
+        const bars = container.querySelectorAll('[data-width]');
         bars.forEach(bar => {
-          bar.style.width = bar.getAttribute('onload').match(/'([^']+)'/)[1];
+          bar.style.width = bar.getAttribute('data-width');
         });
       }, 100);
 

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Hardware & Data Pipeline | ParkSpot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                fontFamily: 'Inter',
+                primaryColor: '#0ea5e9',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#0284c7',
+                lineColor: '#64748b',
+                secondaryColor: '#0f172a',
+                tertiaryColor: '#1e293b'
+            }
+        });
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: { 850: '#151f32', 900: '#0f172a', 950: '#020617' },
+                        tech: { accent: '#0ea5e9', success: '#10b981', warn: '#f59e0b' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+    </style>
+</head>
+
+<body class="p-8 min-h-screen flex flex-col items-center">
+
+    <div class="max-w-7xl w-full space-y-8">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">End-to-End IoT Data Flow</h1>
+                <p class="text-slate-400 font-mono text-sm">Hardware -> Cloud -> Intelligence</p>
+            </div>
+            <div class="flex gap-2">
+                <span
+                    class="px-3 py-1 bg-blue-900/30 text-blue-400 rounded text-xs font-mono border border-blue-800">HARDWARE</span>
+                <span
+                    class="px-3 py-1 bg-green-900/30 text-green-400 rounded text-xs font-mono border border-green-800">SERVER</span>
+                <span
+                    class="px-3 py-1 bg-purple-900/30 text-purple-400 rounded text-xs font-mono border border-purple-800">ML
+                    / UI</span>
+            </div>
+        </div>
+
+        <div class="glass-panel p-8 rounded-xl shadow-2xl overflow-hidden">
+            <div class="mermaid flex justify-center">
+                %%{init: {'flowchart': {'curve': 'monotoneX', 'nodeSpacing': 40, 'rankSpacing': 60}}}%%
+                graph LR
+                subgraph Edge ["Edge Layer (Hardware)"]
+                direction TB
+                A[("IR Sensor")]:::hardware
+                B["Arduino Mega"]:::hardware
+                C["ESP8266 WiFi"]:::hardware
+
+                A -->|Detects Object| B
+                B -->|Serial Data| C
+                end
+
+                subgraph Network ["Transmission"]
+                D((WiFi Network)):::network
+                C -.->|HTTP POST| D
+                end
+
+                subgraph Cloud ["Server Layer"]
+                direction TB
+                E["Flask Server (Python)"]:::server
+                F[("CSV Database")]:::storage
+
+                D -->|JSON Payload| E
+                E -->|Append Data| F
+                end
+
+                subgraph Intelligence ["ML & Presentation"]
+                direction TB
+                G["ML Training"]:::ml
+                H["Web Dashboard"]:::ui
+
+                F -->|Historical Data| G
+                G -->|Prediction Model| H
+                E -->|Real-time Status| H
+                end
+
+                classDef hardware fill:#1e3a8a,stroke:#3b82f6,stroke-width:2px,color:#fff;
+                classDef network fill:#0f172a,stroke:#64748b,stroke-width:1px,stroke-dasharray: 5 5,color:#94a3b8;
+                classDef server fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#fff;
+                classDef storage fill:#374151,stroke:#9ca3af,stroke-width:2px,color:#fff;
+                classDef ml fill:#581c87,stroke:#a855f7,stroke-width:2px,color:#fff;
+                classDef ui fill:#be185d,stroke:#f43f5e,stroke-width:2px,color:#fff;
+            </div>
+        </div>
+
+        <!-- Detailed Steps -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Step 1 -->
+            <div
+                class="p-5 rounded-lg bg-slate-900/50 border border-slate-800 hover:border-blue-500/50 transition-colors">
+                <div class="text-blue-400 font-mono text-xs mb-2">01. ACQUISITION</div>
+                <h3 class="text-white font-semibold mb-2">Signal Detection</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    IR sensors detect vehicle presence. Arduino Mega processes the digital signal and packages it for
+                    transmission.
+                </p>
+            </div>
+
+            <!-- Step 2 -->
+            <div
+                class="p-5 rounded-lg bg-slate-900/50 border border-slate-800 hover:border-green-500/50 transition-colors">
+                <div class="text-green-400 font-mono text-xs mb-2">02. INGESTION</div>
+                <h3 class="text-white font-semibold mb-2">Server Uplink</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    ESP8266 connects to WiFi and sends a POST request to the Flask endpoint. Data is logged to a
+                    persistent CSV file.
+                </p>
+            </div>
+
+            <!-- Step 3 -->
+            <div
+                class="p-5 rounded-lg bg-slate-900/50 border border-slate-800 hover:border-purple-500/50 transition-colors">
+                <div class="text-purple-400 font-mono text-xs mb-2">03. LEARNING</div>
+                <h3 class="text-white font-semibold mb-2">Model Training</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    The CSV dataset is used to retrain the ML model, learning occupancy patterns based on time and day.
+                </p>
+            </div>
+
+            <!-- Step 4 -->
+            <div
+                class="p-5 rounded-lg bg-slate-900/50 border border-slate-800 hover:border-pink-500/50 transition-colors">
+                <div class="text-pink-400 font-mono text-xs mb-2">04. INSIGHT</div>
+                <h3 class="text-white font-semibold mb-2">Dashboard</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    Users view real-time status and predictive availability on the web dashboard, powered by the trained
+                    model.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
